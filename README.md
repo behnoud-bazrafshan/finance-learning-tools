@@ -1,6 +1,7 @@
 # Finance Learning Tools
 
 A collection of interactive dashboards, simulators, and visual tools for teaching and learning finance concepts.
+
 **Live site:** https://behnoud-bazrafshan.github.io/finance-learning-tools/
 
 ## Dashboards
