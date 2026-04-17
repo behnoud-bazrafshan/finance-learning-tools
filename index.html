@@ -3,215 +3,247 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="theme-color" content="#17324d" />
+    <meta name="theme-color" content="#0f766e" />
     <link rel="icon" type="image/svg+xml" href="./favicon.svg" />
     <link rel="manifest" href="./manifest.json" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="./styles.css" />
     <title>Finance Learning Tools</title>
     <style>
-      :root {
-        color-scheme: light;
-        --bg-start: #f4efe6;
-        --bg-end: #d9e8f5;
-        --card-bg: rgba(255, 255, 255, 0.82);
-        --card-border: rgba(50, 76, 101, 0.12);
-        --text: #17324d;
-        --muted: #4f657a;
-        --accent: #0b6e4f;
-        --accent-strong: #084c39;
-        --shadow: 0 24px 70px rgba(23, 50, 77, 0.14);
-      }
-
-      * {
-        box-sizing: border-box;
-      }
-
-      body {
-        margin: 0;
-        min-height: 100vh;
-        font-family: Georgia, "Times New Roman", serif;
-        background:
-          radial-gradient(circle at top, rgba(255, 255, 255, 0.75), transparent 34%),
-          linear-gradient(135deg, var(--bg-start), var(--bg-end));
-        color: var(--text);
-      }
-
-      main {
-        width: min(980px, calc(100% - 32px));
-        margin: 0 auto;
-        padding: 64px 0 72px;
-      }
-
       .hero {
-        margin-bottom: 32px;
-        padding: 40px;
-        border: 1px solid var(--card-border);
-        border-radius: 28px;
-        background: var(--card-bg);
-        backdrop-filter: blur(12px);
-        box-shadow: var(--shadow);
+        padding: 56px 0 40px;
+        max-width: 720px;
       }
 
-      .eyebrow {
-        margin: 0 0 14px;
-        font-family: "Trebuchet MS", "Segoe UI", sans-serif;
-        font-size: 0.82rem;
+      .hero-eyebrow {
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+        font-size: 0.72rem;
         font-weight: 700;
-        letter-spacing: 0.16em;
         text-transform: uppercase;
-        color: var(--accent);
+        letter-spacing: 0.14em;
+        color: var(--text-muted);
       }
 
-      h1 {
-        margin: 0;
-        font-size: clamp(2.5rem, 5vw, 4.4rem);
-        line-height: 0.96;
+      .hero-eyebrow::before {
+        content: "";
+        display: inline-block;
+        width: 24px;
+        height: 1px;
+        background: var(--border-strong);
+      }
+
+      .hero h1 {
+        margin-top: 16px;
+        font-size: clamp(2.4rem, 4.5vw, 3.6rem);
+        font-weight: 500;
+        letter-spacing: -0.02em;
+        line-height: 1.05;
       }
 
       .hero p {
-        max-width: 680px;
-        margin: 18px 0 0;
-        font-size: 1.08rem;
-        line-height: 1.7;
-        color: var(--muted);
+        margin-top: 18px;
+        color: var(--text-muted);
+        font-size: 1.05rem;
+        line-height: 1.65;
+        max-width: 620px;
       }
 
-      .grid {
+      .categories {
         display: grid;
         grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-        gap: 22px;
+        gap: 20px;
       }
 
-      .card {
-        display: block;
-        padding: 28px;
-        border: 1px solid var(--card-border);
-        border-radius: 24px;
-        background: var(--card-bg);
-        box-shadow: var(--shadow);
+      .dash-card {
+        display: flex;
+        flex-direction: column;
+        padding: 24px 24px 22px;
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: var(--radius);
+        box-shadow: var(--shadow-xs);
         color: inherit;
+        transition: transform 160ms ease, border-color 160ms ease, box-shadow 160ms ease;
+        min-height: 220px;
+      }
+
+      .dash-card:hover,
+      .dash-card:focus-visible {
+        transform: translateY(-2px);
+        border-color: var(--accent-line);
+        box-shadow: var(--shadow);
         text-decoration: none;
-        transition:
-          transform 180ms ease,
-          box-shadow 180ms ease,
-          border-color 180ms ease;
       }
 
-      .card:hover,
-      .card:focus-visible {
-        transform: translateY(-4px);
-        border-color: rgba(11, 110, 79, 0.35);
-        box-shadow: 0 28px 80px rgba(23, 50, 77, 0.2);
-      }
-
-      .card-label {
-        display: inline-block;
-        margin-bottom: 14px;
-        padding: 6px 10px;
-        border-radius: 999px;
-        background: rgba(11, 110, 79, 0.1);
-        font-family: "Trebuchet MS", "Segoe UI", sans-serif;
-        font-size: 0.8rem;
+      .dash-card-tag {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        font-size: 0.7rem;
         font-weight: 700;
-        letter-spacing: 0.08em;
+        letter-spacing: 0.12em;
         text-transform: uppercase;
-        color: var(--accent);
+        color: var(--text-muted);
       }
 
-      .card h2 {
-        margin: 0 0 10px;
-        font-size: 1.6rem;
+      .dash-card-tag .dot {
+        width: 7px;
+        height: 7px;
+        border-radius: 50%;
       }
 
-      .card p {
-        margin: 0;
-        line-height: 1.65;
-        color: var(--muted);
+      .dash-card h2 {
+        margin-top: 14px;
+        font-size: 1.3rem;
+        font-weight: 500;
+        letter-spacing: -0.01em;
       }
 
-      .card strong {
-        display: inline-block;
-        margin-top: 18px;
-        font-family: "Trebuchet MS", "Segoe UI", sans-serif;
-        font-size: 0.95rem;
+      .dash-card p {
+        margin-top: 10px;
+        color: var(--text-muted);
+        font-size: 0.92rem;
+        line-height: 1.55;
+        flex: 1;
+      }
+
+      .dash-card-cta {
+        margin-top: 20px;
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        font-size: 0.85rem;
+        font-weight: 600;
         color: var(--accent-strong);
       }
 
-      @media (max-width: 640px) {
-        main {
-          padding: 28px 0 40px;
-        }
+      .dash-card-cta .arrow {
+        transition: transform 160ms ease;
+        font-family: var(--font-sans);
+      }
 
-        .hero,
-        .card {
-          padding: 24px;
-        }
+      .dash-card:hover .dash-card-cta .arrow {
+        transform: translateX(4px);
+      }
+
+      .section-title-row {
+        display: flex;
+        align-items: baseline;
+        justify-content: space-between;
+        margin: 44px 0 18px;
+        gap: 16px;
+      }
+
+      .section-title-row h2 {
+        font-size: 1.15rem;
+        font-weight: 500;
+        color: var(--text-strong);
+      }
+
+      .section-title-row p {
+        color: var(--text-muted);
+        font-size: 0.88rem;
+      }
+
+      footer {
+        margin-top: 56px;
+        padding-top: 24px;
+        border-top: 1px solid var(--border);
+        color: var(--text-muted);
+        font-size: 0.85rem;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 16px;
+        flex-wrap: wrap;
+      }
+
+      footer a {
+        color: var(--text-muted);
+      }
+      footer a:hover {
+        color: var(--accent-strong);
       }
     </style>
   </head>
   <body>
-    <main>
+    <header class="topnav">
+      <div class="topnav-inner">
+        <a class="brand" href="./index.html">
+          <span class="brand-mark">FL</span>
+          Finance Learning Tools
+        </a>
+        <nav class="nav-links" aria-label="Primary">
+          <a class="nav-link" href="#dashboards">Dashboards</a>
+          <a class="nav-link" href="https://github.com/behnoud-bazrafshan/finance-learning-tools" target="_blank" rel="noopener">GitHub</a>
+        </nav>
+      </div>
+    </header>
+
+    <main class="page">
       <section class="hero">
-        <p class="eyebrow">Finance Learning Tools</p>
-        <h1>Choose a dashboard or simulator</h1>
+        <span class="hero-eyebrow">Teaching dashboards</span>
+        <h1>Interactive tools for learning finance, one concept at a time.</h1>
         <p>
-          These interactive dashboards are designed for teaching and classroom
-          exploration. Select a tool below to open it in your browser and move
-          between portfolio theory, expected return, leverage, bonds, and
-          return distributions.
+          A small collection of focused, browser-based dashboards for the classroom.
+          Move between portfolio theory, expected return, leverage, bond pricing,
+          and return distributions — each in a single page, no installs required.
         </p>
       </section>
 
-      <section class="grid" aria-label="Dashboard list">
-        <a class="card" href="./bond_simulator.html">
-          <span class="card-label">Fixed Income</span>
+      <div class="section-title-row" id="dashboards">
+        <h2>Choose a dashboard</h2>
+        <p class="muted">Five tools · each self-contained</p>
+      </div>
+
+      <section class="categories" aria-label="Dashboard list">
+        <a class="dash-card" href="./efficient_frontier_dashboard.html">
+          <span class="dash-card-tag"><span class="dot" style="background: var(--c-teal)"></span>Portfolio Theory</span>
+          <h2>Efficient Frontier</h2>
+          <p>Explore how weights, correlations, and a third asset reshape the risk–return frontier and the minimum-variance portfolio.</p>
+          <span class="dash-card-cta">Open dashboard <span class="arrow">→</span></span>
+        </a>
+
+        <a class="dash-card" href="./financial_leverage_simulator.html">
+          <span class="dash-card-tag"><span class="dot" style="background: var(--c-rose)"></span>Capital Structure</span>
+          <h2>Financial Leverage</h2>
+          <p>Compare an all-equity firm with a leveraged firm to see how debt magnifies return on equity across different market returns.</p>
+          <span class="dash-card-cta">Open dashboard <span class="arrow">→</span></span>
+        </a>
+
+        <a class="dash-card" href="./bond_simulator.html">
+          <span class="dash-card-tag"><span class="dot" style="background: var(--c-navy)"></span>Fixed Income</span>
           <h2>Bond Simulator</h2>
-          <p>
-            Explore how changes in market interest rates affect a bond's price
-            and present value over time.
-          </p>
-          <strong>Open dashboard</strong>
+          <p>Move the market yield and watch discounting pull a bond's price below or above par, cash flow by cash flow.</p>
+          <span class="dash-card-cta">Open dashboard <span class="arrow">→</span></span>
         </a>
 
-        <a class="card" href="./efficient_frontier_dashboard.html">
-          <span class="card-label">Portfolio Theory</span>
-          <h2>Efficient Frontier Dashboard</h2>
-          <p>
-            Explore portfolio risk and return tradeoffs, visualize the frontier,
-            and experiment with allocation ideas.
-          </p>
-          <strong>Open dashboard</strong>
+        <a class="dash-card" href="./expected_return_dashboard.html">
+          <span class="dash-card-tag"><span class="dot" style="background: var(--c-amber)"></span>Expected Return</span>
+          <h2>Expected Return</h2>
+          <p>Draw from economic states to show that expected return is a long-run average, not the return that must happen next.</p>
+          <span class="dash-card-cta">Open dashboard <span class="arrow">→</span></span>
         </a>
 
-        <a class="card" href="./financial_leverage_simulator.html">
-          <span class="card-label">Capital Structure</span>
-          <h2>Financial Leverage Simulator</h2>
-          <p>
-            See how leverage changes outcomes and compare scenarios in an
-            interactive teaching-focused simulator.
-          </p>
-          <strong>Open dashboard</strong>
-        </a>
-
-        <a class="card" href="./expected_return_dashboard.html">
-          <span class="card-label">Expected Return</span>
-          <h2>Expected Return Simulator</h2>
-          <p>
-            Simulate repeated state outcomes to show how expected return emerges
-            as a long-run average rather than a single-period guarantee.
-          </p>
-          <strong>Open dashboard</strong>
-        </a>
-
-        <a class="card" href="./histogram_dashboard.html">
-          <span class="card-label">Data Distribution</span>
-          <h2>Histogram Dashboard</h2>
-          <p>
-            Build a frequency distribution of historical stock returns step by
-            step and watch each observation fall into its return bin.
-          </p>
-          <strong>Open dashboard</strong>
+        <a class="dash-card" href="./histogram_dashboard.html">
+          <span class="dash-card-tag"><span class="dot" style="background: var(--c-slate)"></span>Data Distribution</span>
+          <h2>Histogram Builder</h2>
+          <p>Step through historical Canadian stock returns and watch each annual observation fall into its bin to form a histogram.</p>
+          <span class="dash-card-cta">Open dashboard <span class="arrow">→</span></span>
         </a>
       </section>
+
+      <footer>
+        <span>&copy; Finance Learning Tools · Built for teaching</span>
+        <a href="https://github.com/behnoud-bazrafshan/finance-learning-tools" target="_blank" rel="noopener">View source on GitHub ↗</a>
+      </footer>
     </main>
   </body>
 </html>

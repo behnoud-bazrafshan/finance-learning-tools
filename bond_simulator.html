@@ -1,344 +1,158 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Bond Price-Yield &amp; Interest Rate Risk Simulator</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#0f766e" />
+  <link rel="icon" type="image/svg+xml" href="./favicon.svg" />
+  <link rel="manifest" href="./manifest.json" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap"
+    rel="stylesheet"
+  />
+  <link rel="stylesheet" href="./styles.css" />
+  <title>Bond Simulator · Finance Learning Tools</title>
   <style>
-    :root {
-      --bg: #f6efe2;
-      --panel: rgba(255, 252, 246, 0.88);
-      --panel-strong: #fffaf2;
-      --text: #21303a;
-      --muted: #62727e;
-      --line: #d8ccbb;
-      --accent: #0d6b74;
-      --accent-soft: #79b5bb;
-      --danger: #c94f46;
-      --cash: #d9d6cf;
-      --pv: #2d8a57;
-      --shadow: 0 18px 48px rgba(49, 57, 68, 0.14);
-    }
-
-    * {
-      box-sizing: border-box;
-    }
-
-    body {
-      margin: 0;
-      min-height: 100vh;
-      font-family: "Avenir Next", "Trebuchet MS", "Segoe UI", sans-serif;
-      color: var(--text);
-      background:
-        radial-gradient(circle at top left, rgba(13, 107, 116, 0.18), transparent 24%),
-        radial-gradient(circle at bottom right, rgba(201, 79, 70, 0.14), transparent 28%),
-        linear-gradient(180deg, #fbf5ea 0%, #f1e6d3 100%);
-    }
-
-    .page {
-      display: grid;
-      grid-template-columns: 320px minmax(0, 1fr);
-      gap: 24px;
-      padding: 20px;
-      align-items: start;
-    }
-
-    .panel {
-      background: var(--panel);
-      backdrop-filter: blur(12px);
-      border: 1px solid rgba(255, 255, 255, 0.5);
-      border-radius: 24px;
-      box-shadow: var(--shadow);
-    }
-
-    .sidebar {
-      padding: 18px 18px 28px;
-      position: sticky;
-      top: 20px;
-      align-self: stretch;
-      min-height: 640px;
-    }
-
-    .back-link {
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      margin-bottom: 14px;
-      color: var(--accent);
-      text-decoration: none;
-      font-size: 0.9rem;
-      font-weight: 700;
-      letter-spacing: 0.04em;
-      text-transform: uppercase;
-    }
-
-    .back-link:hover,
-    .back-link:focus-visible {
-      text-decoration: underline;
-    }
-
-    .sidebar h1 {
-      margin: 0 0 8px;
-      font-family: Georgia, "Times New Roman", serif;
-      font-size: 1.75rem;
-      line-height: 1.02;
-    }
-
-    .sidebar p {
-      margin: 0 0 14px;
-      color: var(--muted);
-      line-height: 1.42;
-      font-size: 0.95rem;
-    }
-
-    .controls {
-      display: grid;
-      gap: 12px;
-    }
-
-    .control {
-      display: grid;
-      gap: 6px;
-    }
-
-    label {
-      font-size: 0.94rem;
-      font-weight: 700;
-      letter-spacing: 0.01em;
-    }
-
-    input,
-    select {
-      width: 100%;
-      padding: 9px 12px;
-      border-radius: 12px;
-      border: 1px solid var(--line);
-      background: rgba(255, 255, 255, 0.9);
-      color: var(--text);
-      font: inherit;
-    }
-
-    input[type="range"] {
-      padding: 0;
-      accent-color: var(--accent);
-    }
-
-    .divider {
-      height: 1px;
-      margin: 6px 0 2px;
-      background: linear-gradient(90deg, transparent, var(--line), transparent);
-    }
-
-    .slider-row {
-      display: flex;
-      justify-content: space-between;
-      gap: 12px;
-      align-items: center;
-      color: var(--muted);
-      font-size: 0.92rem;
-    }
-
-    .content {
-      display: grid;
-      gap: 16px;
-    }
-
-    .metrics {
-      display: grid;
-      grid-template-columns: repeat(3, minmax(0, 1fr));
-      gap: 14px;
-    }
-
-    .metric {
-      padding: 16px 18px;
-      min-height: 96px;
-    }
-
-    .metric-label {
-      font-size: 0.84rem;
-      text-transform: uppercase;
-      letter-spacing: 0.12em;
-      color: var(--muted);
-      font-weight: 700;
-    }
-
-    .metric-value {
-      margin-top: 8px;
-      font-size: clamp(1.4rem, 2vw, 2rem);
-      font-weight: 800;
-    }
-
-    .metric-note {
-      margin-top: 6px;
-      color: var(--muted);
-      font-size: 0.92rem;
-    }
-
     .chart-grid {
       display: grid;
       grid-template-columns: repeat(2, minmax(0, 1fr));
-      gap: 16px;
+      gap: 20px;
     }
 
-    .card {
-      padding: 16px 16px 12px;
+    @media (max-width: 960px) {
+      .chart-grid { grid-template-columns: 1fr; }
     }
 
-    .card h3 {
-      margin: 0;
-      font-size: 1.15rem;
-    }
-
-    .card p {
-      margin: 6px 0 12px;
-      color: var(--muted);
-      line-height: 1.5;
-    }
-
-    .chart {
+    .plot-svg {
       width: 100%;
       height: auto;
       display: block;
-      border-radius: 18px;
-      background:
-        linear-gradient(180deg, rgba(255, 255, 255, 0.75), rgba(255, 255, 255, 0.88)),
-        linear-gradient(135deg, rgba(121, 181, 187, 0.12), rgba(201, 79, 70, 0.08));
-      border: 1px solid rgba(216, 204, 187, 0.8);
-    }
-
-    .legend {
-      display: flex;
-      gap: 18px;
-      flex-wrap: wrap;
-      margin-top: 10px;
-      color: var(--muted);
-      font-size: 0.9rem;
-    }
-
-    .legend-item {
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-    }
-
-    .swatch {
-      width: 12px;
-      height: 12px;
-      border-radius: 3px;
     }
 
     .footer-note {
-      padding: 0 4px;
-      color: var(--muted);
+      padding: 20px 22px;
+      color: var(--text-muted);
       line-height: 1.6;
-      font-size: 0.95rem;
-    }
-
-    @media (max-width: 1080px) {
-      .page {
-        grid-template-columns: 1fr;
-      }
-
-      .sidebar {
-        position: static;
-      }
-
-      .chart-grid,
-      .metrics {
-        grid-template-columns: 1fr;
-      }
+      font-size: 0.92rem;
     }
   </style>
 </head>
 <body>
-  <div class="page">
-    <aside class="sidebar panel">
-      <a class="back-link" href="./index.html">&larr; Back to main menu</a>
-      <h1>Bond Price-Yield &amp; Interest Rate Risk Simulator</h1>
-      <p>Change the market rate and watch how discounting pulls a bond's price lower, especially for cash flows that arrive far in the future.</p>
+  <header class="topnav">
+    <div class="topnav-inner">
+      <a class="brand" href="./index.html">
+        <span class="brand-mark">FL</span>
+        Finance Learning Tools
+      </a>
+      <a class="nav-home" href="./index.html" aria-label="Back to all dashboards">
+        <span class="chev">←</span> All dashboards
+      </a>
+    </div>
+  </header>
 
-      <div class="controls">
-        <div class="control">
-          <label for="faceValue">Face Value ($)</label>
-          <input id="faceValue" type="number" min="100" step="100" value="1000">
+  <main class="page">
+    <div class="dashboard">
+      <aside class="sidebar">
+        <div class="sidebar-header">
+          <span class="sidebar-eyebrow">Fixed Income</span>
+          <h1>Bond Simulator</h1>
+          <p>Change the market rate and watch how discounting pulls a bond's price lower — especially for cash flows that arrive far in the future.</p>
         </div>
 
-        <div class="control">
-          <label for="couponRate">Coupon Rate (%)</label>
-          <input id="couponRate" type="number" min="0" max="25" step="0.1" value="10.0">
-        </div>
-
-        <div class="control">
-          <label for="years">Years to Maturity</label>
-          <input id="years" type="number" min="1" max="30" step="1" value="10">
-        </div>
-
-        <div class="control">
-          <label for="frequency">Coupon Frequency</label>
-          <select id="frequency">
-            <option value="1" selected>Annual</option>
-            <option value="2">Semiannual</option>
-          </select>
-        </div>
-
-        <div class="divider"></div>
-
-        <div class="control">
-          <label for="ytm">Market Interest Rate (YTM %)</label>
-          <input id="ytm" type="range" min="0" max="20" step="0.1" value="12.0">
-          <div class="slider-row">
-            <span>0.0%</span>
-            <strong id="ytmValue">12.0%</strong>
-            <span>20.0%</span>
+        <div class="sidebar-section">
+          <h2 class="section-title"><span class="section-dot"></span>Bond terms</h2>
+          <div class="field">
+            <label class="field-label" for="faceValue">Face value ($)</label>
+            <input id="faceValue" type="number" min="100" step="100" value="1000" />
+          </div>
+          <div class="field">
+            <label class="field-label" for="couponRate">Coupon rate (%)</label>
+            <input id="couponRate" type="number" min="0" max="25" step="0.1" value="10.0" />
+          </div>
+          <div class="field">
+            <label class="field-label" for="years">Years to maturity</label>
+            <input id="years" type="number" min="1" max="30" step="1" value="10" />
+          </div>
+          <div class="field">
+            <label class="field-label" for="frequency">Coupon frequency</label>
+            <select id="frequency">
+              <option value="1" selected>Annual</option>
+              <option value="2">Semiannual</option>
+            </select>
           </div>
         </div>
-      </div>
-    </aside>
 
-    <main class="content">
-      <section class="metrics">
-        <article class="metric panel">
-          <div class="metric-label">Bond Price</div>
-          <div class="metric-value" id="priceMetric">$0.00</div>
-          <div class="metric-note" id="priceGapMetric">Relative to par: $0.00</div>
-        </article>
-
-        <article class="metric panel">
-          <div class="metric-label">Market Rate</div>
-          <div class="metric-value" id="rateMetric">0.0%</div>
-          <div class="metric-note" id="couponVsRateMetric">Coupon and market yield match</div>
-        </article>
-
-        <article class="metric panel">
-          <div class="metric-label">Trading At</div>
-          <div class="metric-value" id="tradingMetric">Par</div>
-          <div class="metric-note" id="durationHintMetric">Longer maturity means more sensitivity</div>
-        </article>
-      </section>
-
-      <section class="chart-grid">
-        <article class="card panel">
-          <h3>1. The Price-Yield Curve</h3>
-          <p>The red point is your current bond. As market yield moves right, price slides down the curve. The dashed reference line marks par value.</p>
-          <svg id="curveChart" class="chart" viewBox="0 0 700 360" aria-label="Bond price yield curve"></svg>
-        </article>
-
-        <article class="card panel">
-          <h3>2. Cash Flows vs. Present Value</h3>
-          <p>Gray bars show the cash you will receive. Green bars show what those same payments are worth today.</p>
-          <svg id="cashFlowChart" class="chart" viewBox="0 0 700 360" aria-label="Cash flow present value chart"></svg>
-          <div class="legend">
-            <span class="legend-item"><span class="swatch" style="background: var(--cash);"></span>Nominal cash flow</span>
-            <span class="legend-item"><span class="swatch" style="background: var(--pv);"></span>Present value</span>
+        <div class="sidebar-section">
+          <h2 class="section-title"><span class="section-dot"></span>Market rate</h2>
+          <div class="field">
+            <label class="field-label" for="ytm">Yield to maturity</label>
+            <input id="ytm" type="range" min="0" max="20" step="0.1" value="12.0" />
+            <div class="flex-between">
+              <span class="field-hint">0%</span>
+              <span class="value-pill" id="ytmValue">12.0%</span>
+              <span class="field-hint">20%</span>
+            </div>
           </div>
+        </div>
+      </aside>
+
+      <section class="main-column">
+        <section class="metrics">
+          <article class="panel metric">
+            <div class="metric-label">Bond price</div>
+            <div class="metric-value" id="priceMetric">$0.00</div>
+            <div class="metric-note" id="priceGapMetric">Relative to par: $0.00</div>
+          </article>
+
+          <article class="panel metric">
+            <div class="metric-label">Market rate</div>
+            <div class="metric-value" id="rateMetric">0.0%</div>
+            <div class="metric-note" id="couponVsRateMetric">Coupon and market yield match</div>
+          </article>
+
+          <article class="panel metric is-accent">
+            <div class="metric-label">Trading at</div>
+            <div class="metric-value" id="tradingMetric">Par</div>
+            <div class="metric-note" id="durationHintMetric">Longer maturity means more sensitivity</div>
+          </article>
+        </section>
+
+        <div class="chart-grid">
+          <article class="plot">
+            <div class="plot-heading">
+              <h2>Price–yield curve</h2>
+              <p>The red point is your current bond. As market yield moves right, price slides down the curve. The dashed line marks par value.</p>
+            </div>
+            <svg id="curveChart" class="plot-svg" viewBox="0 0 700 360" aria-label="Bond price yield curve"></svg>
+          </article>
+
+          <article class="plot">
+            <div class="plot-heading">
+              <h2>Cash flows vs. present value</h2>
+              <p>Grey bars show the cash you will receive. Teal bars show what those same payments are worth today.</p>
+            </div>
+            <svg id="cashFlowChart" class="plot-svg" viewBox="0 0 700 360" aria-label="Cash flow present value chart"></svg>
+            <div class="plot-footer">
+              <span class="chip"><span class="chip-swatch" style="background: #c7c2b4;"></span>Nominal cash flow</span>
+              <span class="chip"><span class="chip-swatch" style="background: #0f766e;"></span>Present value</span>
+            </div>
+          </article>
+        </div>
+
+        <article class="panel">
+          <p class="footer-note">
+            Bond prices move in the opposite direction of interest rates. Each future
+            coupon and principal payment is valued using the market yield. When the
+            yield rises, those future cash flows are worth less today, so the bond's
+            price falls. Cash flows that arrive farther in the future are affected
+            more, which is why long-term bonds are more sensitive to rate changes.
+          </p>
         </article>
       </section>
-
-      <section class="footer-note">
-        The key intuition is that bond prices move in the opposite direction of interest rates. Each future coupon and principal payment is valued using the market yield. When the yield rises, those future cash flows are worth less today, so the bond's price falls. Cash flows that arrive farther in the future are affected more, which is why long-term bonds are more sensitive to interest rate changes.
-      </section>
-    </main>
-  </div>
+    </div>
+  </main>
 
   <script>
     const controls = {
@@ -359,6 +173,18 @@
       durationHintMetric: document.getElementById("durationHintMetric"),
       curveChart: document.getElementById("curveChart"),
       cashFlowChart: document.getElementById("cashFlowChart")
+    };
+
+    const PALETTE = {
+      axis: "#9b958a",
+      grid: "#ebe7dc",
+      curve: "#0f766e",
+      marker: "#b4414b",
+      par: "#b45309",
+      nominal: "#c7c2b4",
+      pv: "#0f766e",
+      text: "#1f1d1a",
+      muted: "#6b665c"
     };
 
     function currency(value) {
@@ -400,30 +226,21 @@
         const discountFactor = 1 / Math.pow(1 + periodYtm, t);
         const presentValue = nominalCashFlow * discountFactor;
 
-        flows.push({
-          period: t,
-          nominalCashFlow,
-          discountFactor,
-          presentValue
-        });
+        flows.push({ period: t, nominalCashFlow, discountFactor, presentValue });
       }
 
       return flows;
     }
 
-    function bondPrice({ faceValue, couponRate, years, frequency, ytm }) {
-      return buildCashFlows({ faceValue, couponRate, years, frequency, ytm })
-        .reduce((sum, row) => sum + row.presentValue, 0);
+    function bondPrice(inputs) {
+      return buildCashFlows(inputs).reduce((sum, row) => sum + row.presentValue, 0);
     }
 
     function priceCurvePoints(inputs) {
       const points = [];
       for (let i = 0; i <= 100; i += 1) {
         const ytm = 0.001 + (0.199 * i) / 100;
-        points.push({
-          x: ytm * 100,
-          y: bondPrice({ ...inputs, ytm })
-        });
+        points.push({ x: ytm * 100, y: bondPrice({ ...inputs, ytm }) });
       }
       return points;
     }
@@ -441,9 +258,9 @@
       if (Math.abs(couponPercent - marketPercent) < 0.05) {
         outputs.couponVsRateMetric.textContent = "Coupon and market yield match";
       } else if (marketPercent > couponPercent) {
-        outputs.couponVsRateMetric.textContent = "Yield is above coupon, so price falls below par";
+        outputs.couponVsRateMetric.textContent = "Yield above coupon → price falls below par";
       } else {
-        outputs.couponVsRateMetric.textContent = "Yield is below coupon, so price rises above par";
+        outputs.couponVsRateMetric.textContent = "Yield below coupon → price rises above par";
       }
 
       if (Math.abs(priceGap) < 0.5) {
@@ -456,15 +273,13 @@
 
       outputs.durationHintMetric.textContent =
         inputs.years >= 15
-          ? "Long maturity: higher price sensitivity to rate changes"
-          : "Shorter maturity: lower price sensitivity to rate changes";
+          ? "Long maturity: higher price sensitivity"
+          : "Shorter maturity: lower price sensitivity";
     }
 
     function svgEl(tag, attrs = {}) {
       const el = document.createElementNS("http://www.w3.org/2000/svg", tag);
-      Object.entries(attrs).forEach(([key, value]) => {
-        el.setAttribute(key, value);
-      });
+      Object.entries(attrs).forEach(([key, value]) => el.setAttribute(key, value));
       return el;
     }
 
@@ -479,33 +294,19 @@
       const xSpan = xMax - xMin || 1;
       const ySpan = yMax - yMin || 1;
 
-      const xScale = (value) => margin.left + ((value - xMin) / xSpan) * chartWidth;
-      const yScale = (value) => margin.top + chartHeight - ((value - yMin) / ySpan) * chartHeight;
-
-      svg.appendChild(svgEl("rect", {
-        x: margin.left,
-        y: margin.top,
-        width: chartWidth,
-        height: chartHeight,
-        fill: "transparent"
-      }));
+      const xScale = (v) => margin.left + ((v - xMin) / xSpan) * chartWidth;
+      const yScale = (v) => margin.top + chartHeight - ((v - yMin) / ySpan) * chartHeight;
 
       xTicks.forEach((tick) => {
         const x = xScale(tick.value);
         svg.appendChild(svgEl("line", {
-          x1: x,
-          y1: margin.top,
-          x2: x,
-          y2: height - margin.bottom,
-          stroke: "#e9dfd1",
-          "stroke-width": 1
+          x1: x, y1: margin.top, x2: x, y2: height - margin.bottom,
+          stroke: PALETTE.grid, "stroke-width": 1
         }));
         const label = svgEl("text", {
-          x,
-          y: height - margin.bottom + 24,
-          "text-anchor": "middle",
-          fill: "#62727e",
-          "font-size": 12
+          x, y: height - margin.bottom + 22,
+          "text-anchor": "middle", fill: PALETTE.muted, "font-size": 12,
+          "font-family": "'Inter', sans-serif"
         });
         label.textContent = tick.label;
         svg.appendChild(label);
@@ -514,61 +315,43 @@
       yTicks.forEach((tick) => {
         const y = yScale(tick.value);
         svg.appendChild(svgEl("line", {
-          x1: margin.left,
-          y1: y,
-          x2: width - margin.right,
-          y2: y,
-          stroke: "#e9dfd1",
-          "stroke-width": 1
+          x1: margin.left, y1: y, x2: width - margin.right, y2: y,
+          stroke: PALETTE.grid, "stroke-width": 1
         }));
         const label = svgEl("text", {
-          x: margin.left - 10,
-          y: y + 4,
-          "text-anchor": "end",
-          fill: "#62727e",
-          "font-size": 12
+          x: margin.left - 10, y: y + 4,
+          "text-anchor": "end", fill: PALETTE.muted, "font-size": 12,
+          "font-family": "'JetBrains Mono', monospace"
         });
         label.textContent = tick.label;
         svg.appendChild(label);
       });
 
       svg.appendChild(svgEl("line", {
-        x1: margin.left,
-        y1: height - margin.bottom,
-        x2: width - margin.right,
-        y2: height - margin.bottom,
-        stroke: "#b39d85",
-        "stroke-width": 1.4
+        x1: margin.left, y1: height - margin.bottom,
+        x2: width - margin.right, y2: height - margin.bottom,
+        stroke: PALETTE.axis, "stroke-width": 1
       }));
 
       svg.appendChild(svgEl("line", {
-        x1: margin.left,
-        y1: margin.top,
-        x2: margin.left,
-        y2: height - margin.bottom,
-        stroke: "#b39d85",
-        "stroke-width": 1.4
+        x1: margin.left, y1: margin.top,
+        x2: margin.left, y2: height - margin.bottom,
+        stroke: PALETTE.axis, "stroke-width": 1
       }));
 
       const xText = svgEl("text", {
-        x: margin.left + chartWidth / 2,
-        y: height - 14,
-        "text-anchor": "middle",
-        fill: "#374853",
-        "font-size": 13,
-        "font-weight": 700
+        x: margin.left + chartWidth / 2, y: height - 12,
+        "text-anchor": "middle", fill: PALETTE.text, "font-size": 12,
+        "font-weight": 600, "font-family": "'Inter', sans-serif"
       });
       xText.textContent = xLabel;
       svg.appendChild(xText);
 
       const yText = svgEl("text", {
-        x: 18,
-        y: margin.top + chartHeight / 2,
-        transform: `rotate(-90 18 ${margin.top + chartHeight / 2})`,
-        "text-anchor": "middle",
-        fill: "#374853",
-        "font-size": 13,
-        "font-weight": 700
+        x: 16, y: margin.top + chartHeight / 2,
+        transform: `rotate(-90 16 ${margin.top + chartHeight / 2})`,
+        "text-anchor": "middle", fill: PALETTE.text, "font-size": 12,
+        "font-weight": 600, "font-family": "'Inter', sans-serif"
       });
       yText.textContent = yLabel;
       svg.appendChild(yText);
@@ -582,93 +365,59 @@
 
       const width = 700;
       const height = 360;
-      const margin = { top: 24, right: 26, bottom: 62, left: 90 };
-      const yValues = points.map((point) => point.y);
+      const margin = { top: 22, right: 22, bottom: 50, left: 80 };
+      const yValues = points.map((p) => p.y);
       const yMin = Math.min(...yValues);
       const yMax = Math.max(...yValues);
       const chartMin = Math.max(0, yMin * 0.94);
       const chartMax = Math.max(yMax * 1.04, currentPoint.y, currentPoint.faceValue || 0, chartMin + 1);
-      const dims = {
-        width,
-        height,
-        margin,
-        xMin: 0,
-        xMax: 20,
-        yMin: chartMin,
-        yMax: chartMax
-      };
+      const dims = { width, height, margin, xMin: 0, xMax: 20, yMin: chartMin, yMax: chartMax };
 
-      const xTicks = [0, 5, 10, 15, 20].map((value) => ({ value, label: `${value}%` }));
+      const xTicks = [0, 5, 10, 15, 20].map((v) => ({ value: v, label: `${v}%` }));
       const yStep = (dims.yMax - dims.yMin) / 4 || 1;
-      const yTicks = Array.from({ length: 5 }, (_, index) => {
-        const value = dims.yMin + yStep * index;
+      const yTicks = Array.from({ length: 5 }, (_, i) => {
+        const value = dims.yMin + yStep * i;
         return { value, label: currency(value).replace(".00", "") };
       });
 
-      const { xScale, yScale } = drawAxes(
-        svg,
-        dims,
-        xTicks,
-        yTicks,
-        "Yield to Maturity (%)",
-        "Price ($)"
-      );
+      const { xScale, yScale } = drawAxes(svg, dims, xTicks, yTicks, "Yield to maturity", "Bond price");
 
       const pathData = points
-        .map((point, index) => `${index === 0 ? "M" : "L"} ${xScale(point.x)} ${yScale(point.y)}`)
+        .map((p, i) => `${i === 0 ? "M" : "L"} ${xScale(p.x)} ${yScale(p.y)}`)
         .join(" ");
-
       svg.appendChild(svgEl("path", {
-        d: pathData,
-        fill: "none",
-        stroke: "#0d6b74",
-        "stroke-width": 4,
-        "stroke-linecap": "round",
-        "stroke-linejoin": "round"
+        d: pathData, fill: "none", stroke: PALETTE.curve,
+        "stroke-width": 2.5, "stroke-linecap": "round", "stroke-linejoin": "round"
       }));
 
       const parY = yScale(currentPoint.faceValue);
       svg.appendChild(svgEl("line", {
-        x1: margin.left,
-        y1: parY,
-        x2: width - margin.right,
-        y2: parY,
-        stroke: "#b78b53",
-        "stroke-width": 2,
-        "stroke-dasharray": "7 7"
+        x1: margin.left, y1: parY, x2: width - margin.right, y2: parY,
+        stroke: PALETTE.par, "stroke-width": 1.5, "stroke-dasharray": "6 6"
       }));
 
       const parLabel = svgEl("text", {
-        x: width - margin.right - 4,
-        y: parY - 8,
-        "text-anchor": "end",
-        fill: "#8a6841",
-        "font-size": 12,
-        "font-weight": 700
+        x: width - margin.right - 4, y: parY - 6,
+        "text-anchor": "end", fill: PALETTE.par,
+        "font-size": 11, "font-weight": 600,
+        "font-family": "'Inter', sans-serif"
       });
       parLabel.textContent = `Par = ${currency(currentPoint.faceValue)}`;
       svg.appendChild(parLabel);
 
       const cx = xScale(currentPoint.x);
       const cy = yScale(currentPoint.y);
-
       svg.appendChild(svgEl("circle", {
-        cx,
-        cy,
-        r: 10,
-        fill: "#c94f46",
-        stroke: "#fff7ef",
-        "stroke-width": 4
+        cx, cy, r: 7, fill: PALETTE.marker, stroke: "#fff", "stroke-width": 2.5
       }));
 
       const guide = svgEl("text", {
         x: Math.min(cx + 12, width - margin.right - 5),
-        y: Math.max(cy - 12, margin.top + 16),
-        fill: "#21303a",
-        "font-size": 12.5,
-        "font-weight": 700
+        y: Math.max(cy - 12, margin.top + 14),
+        fill: PALETTE.text, "font-size": 12, "font-weight": 600,
+        "font-family": "'JetBrains Mono', monospace"
       });
-      guide.textContent = `${percent(currentPoint.x)} | ${currency(currentPoint.y)}`;
+      guide.textContent = `${percent(currentPoint.x)}  ·  ${currency(currentPoint.y)}`;
       svg.appendChild(guide);
     }
 
@@ -678,36 +427,24 @@
 
       const width = 700;
       const height = 360;
-      const margin = { top: 24, right: 26, bottom: 62, left: 90 };
-      const maxValue = Math.max(Math.max(...flows.map((flow) => flow.nominalCashFlow)) * 1.08, 1);
+      const margin = { top: 22, right: 22, bottom: 50, left: 80 };
+      const maxValue = Math.max(Math.max(...flows.map((f) => f.nominalCashFlow)) * 1.08, 1);
       const dims = {
-        width,
-        height,
-        margin,
-        xMin: 0.5,
-        xMax: flows.length + 0.5,
-        yMin: 0,
-        yMax: maxValue
+        width, height, margin,
+        xMin: 0.5, xMax: flows.length + 0.5,
+        yMin: 0, yMax: maxValue
       };
 
       const tickPeriods = flows.length <= 10
-        ? flows.map((flow) => flow.period)
+        ? flows.map((f) => f.period)
         : [1, Math.ceil(flows.length / 4), Math.ceil(flows.length / 2), flows.length];
-
-      const xTicks = tickPeriods.map((value) => ({ value, label: String(value) }));
-      const yTicks = Array.from({ length: 5 }, (_, index) => {
-        const value = (maxValue / 4) * index;
+      const xTicks = tickPeriods.map((v) => ({ value: v, label: String(v) }));
+      const yTicks = Array.from({ length: 5 }, (_, i) => {
+        const value = (maxValue / 4) * i;
         return { value, label: currency(value).replace(".00", "") };
       });
 
-      const { xScale, yScale } = drawAxes(
-        svg,
-        dims,
-        xTicks,
-        yTicks,
-        "Period",
-        "Value ($)"
-      );
+      const { xScale, yScale } = drawAxes(svg, dims, xTicks, yTicks, "Period", "Value");
 
       const chartWidth = width - margin.left - margin.right;
       const slotWidth = chartWidth / flows.length;
@@ -720,21 +457,14 @@
         const baseY = yScale(0);
 
         svg.appendChild(svgEl("rect", {
-          x: centerX - barWidth / 2,
-          y: nominalY,
-          width: barWidth,
-          height: baseY - nominalY,
-          rx: 4,
-          fill: "#d9d6cf"
+          x: centerX - barWidth / 2, y: nominalY,
+          width: barWidth, height: baseY - nominalY, rx: 3,
+          fill: PALETTE.nominal
         }));
-
         svg.appendChild(svgEl("rect", {
-          x: centerX - barWidth / 2,
-          y: pvY,
-          width: barWidth,
-          height: baseY - pvY,
-          rx: 4,
-          fill: "#2d8a57"
+          x: centerX - barWidth / 2, y: pvY,
+          width: barWidth, height: baseY - pvY, rx: 3,
+          fill: PALETTE.pv
         }));
       });
     }

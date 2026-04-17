@@ -3,337 +3,98 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="theme-color" content="#0d6b74" />
+  <meta name="theme-color" content="#0f766e" />
   <link rel="icon" type="image/svg+xml" href="./favicon.svg" />
   <link rel="manifest" href="./manifest.json" />
-  <title>Expected Return Simulator</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap"
+    rel="stylesheet"
+  />
+  <link rel="stylesheet" href="./styles.css" />
+  <title>Expected Return Simulator · Finance Learning Tools</title>
   <style>
-    :root {
-      --bg: #f6efe2;
-      --panel: rgba(255, 252, 246, 0.88);
-      --panel-strong: #fffaf2;
-      --text: #21303a;
-      --muted: #62727e;
-      --line: #d8ccbb;
-      --accent: #0d6b74;
-      --accent-soft: rgba(13, 107, 116, 0.12);
-      --accent-strong: #0b5c63;
-      --good: #2d8a57;
-      --bad: #c94f46;
-      --shadow: 0 18px 48px rgba(49, 57, 68, 0.14);
-    }
-
-    * {
-      box-sizing: border-box;
-    }
-
-    body {
-      margin: 0;
-      min-height: 100vh;
-      font-family: "Avenir Next", "Trebuchet MS", "Segoe UI", sans-serif;
-      background:
-        radial-gradient(circle at top left, rgba(13, 107, 116, 0.18), transparent 24%),
-        radial-gradient(circle at bottom right, rgba(201, 79, 70, 0.14), transparent 28%),
-        linear-gradient(180deg, #fbf5ea 0%, #f1e6d3 100%);
-      color: var(--text);
-      line-height: 1.45;
-    }
-
-    .page {
-      display: grid;
-      grid-template-columns: 320px minmax(0, 1fr);
-      gap: 24px;
-      padding: 20px;
-      align-items: start;
-    }
-
-    .back-link {
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      color: var(--accent);
-      text-decoration: none;
-      font-size: 0.9rem;
-      font-weight: 700;
-      letter-spacing: 0.04em;
-      text-transform: uppercase;
-    }
-
-    .back-link:hover,
-    .back-link:focus-visible {
-      text-decoration: underline;
-    }
-
-    .panel {
-      background: var(--panel);
-      backdrop-filter: blur(12px);
-      border: 1px solid rgba(255, 255, 255, 0.5);
-      border-radius: 24px;
-      box-shadow: var(--shadow);
-    }
-
-    .sidebar {
-      padding: 18px 18px 24px;
-      position: sticky;
-      top: 20px;
-      display: grid;
-      gap: 16px;
-    }
-
-    .sidebar h1 {
-      margin: 2px 0 8px;
-      font-family: Georgia, "Times New Roman", serif;
-      font-size: 1.75rem;
-      line-height: 1.02;
-    }
-
-    .sidebar p {
-      margin: 0;
-      color: var(--muted);
-      line-height: 1.5;
-      font-size: 0.95rem;
-    }
-
-    .sidebar-section {
-      display: grid;
-      gap: 12px;
-      padding: 14px;
-      border-radius: 18px;
-      background: var(--panel-strong);
-      border: 1px solid rgba(216, 204, 187, 0.8);
-    }
-
-    .sidebar-section h2 {
-      margin: 0;
-      font-size: 1.08rem;
-    }
-
-    .small {
-      color: var(--muted);
-      font-size: 0.92rem;
-      line-height: 1.55;
-    }
-
-    table {
+    .chart-wrap {
+      min-height: 440px;
       width: 100%;
-      border-collapse: collapse;
-      font-size: 0.95rem;
     }
 
-    th,
-    td {
-      padding: 10px 8px;
-      border-bottom: 1px solid var(--line);
-      text-align: center;
-    }
-
-    th:first-child,
-    td:first-child {
-      text-align: left;
-    }
-
-    thead th {
-      background: rgba(13, 107, 116, 0.06);
-      font-weight: 700;
-    }
-
-    .formula {
-      background: rgba(13, 107, 116, 0.06);
-      border: 1px solid rgba(13, 107, 116, 0.18);
-      border-radius: 14px;
-      padding: 12px;
-      font-size: 0.93rem;
-      line-height: 1.55;
-    }
-
-    .controls {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 8px;
-    }
-
-    button {
-      border: 1px solid var(--line);
-      background: rgba(255, 255, 255, 0.9);
-      color: var(--text);
-      padding: 10px 12px;
-      border-radius: 10px;
-      cursor: pointer;
-      font: inherit;
-      font-weight: 700;
-    }
-
-    button:hover {
-      border-color: var(--accent);
-    }
-
-    button.primary,
-    button.secondary {
-      background: var(--accent);
-      color: white;
-      border-color: var(--accent);
-    }
-
-    .panel-grid {
-      display: grid;
-      gap: 12px;
+    canvas#chart {
+      width: 100%;
+      height: 100%;
+      display: block;
+      background: var(--surface);
+      border-radius: var(--radius-sm);
     }
 
     .mini-card {
-      border: 1px solid rgba(216, 204, 187, 0.8);
-      border-radius: 14px;
-      padding: 12px;
-      background: rgba(255, 255, 255, 0.72);
+      padding: 12px 14px;
+      border-radius: var(--radius-sm);
+      background: var(--surface-muted);
+      border: 1px solid var(--border);
     }
 
-    .pill {
-      display: inline-block;
-      padding: 6px 10px;
-      border-radius: 999px;
+    .mini-card .label {
+      font-size: 0.7rem;
       font-weight: 700;
-      font-size: 0.88rem;
-      margin-right: 8px;
-    }
-
-    .boom { background: #dcfce7; color: #166534; }
-    .recession { background: #fee2e2; color: #991b1b; }
-
-    .content {
-      display: grid;
-      gap: 16px;
-    }
-
-    .metrics {
-      display: grid;
-      grid-template-columns: repeat(3, minmax(0, 1fr));
-      gap: 14px;
-    }
-
-    .metric {
-      padding: 16px 18px;
-      min-height: 96px;
-    }
-
-    .label {
-      color: var(--muted);
-      font-size: 0.84rem;
+      letter-spacing: 0.1em;
       text-transform: uppercase;
-      letter-spacing: 0.12em;
-      margin-bottom: 4px;
-      font-weight: 700;
+      color: var(--text-muted);
     }
 
-    .value {
-      font-size: clamp(1.4rem, 2vw, 2rem);
-      font-weight: 800;
-    }
-
-    .sub {
-      font-size: 0.92rem;
-      color: var(--muted);
+    .mini-card .value {
       margin-top: 6px;
+      font-weight: 600;
+      font-size: 0.95rem;
+      color: var(--text);
     }
 
-    .card {
-      padding: 16px 16px 12px;
+    .mini-card .sub {
+      margin-top: 4px;
+      font-family: var(--font-mono);
+      font-size: 0.82rem;
+      color: var(--text-muted);
     }
 
-    .card h2 {
-      margin: 0;
-      font-size: 1.15rem;
-    }
-
-    .card p {
-      margin: 6px 0 12px;
-      color: var(--muted);
-      line-height: 1.5;
-    }
-
-    .chart-wrap {
-      min-height: 520px;
-      display: flex;
-    }
-
-    canvas {
-      width: 100%;
-      height: 100%;
-      border: 1px solid rgba(216, 204, 187, 0.8);
-      border-radius: 18px;
-      background:
-        linear-gradient(180deg, rgba(255, 255, 255, 0.75), rgba(255, 255, 255, 0.88)),
-        linear-gradient(135deg, rgba(121, 181, 187, 0.12), rgba(201, 79, 70, 0.08));
-      display: block;
-    }
-
-    .legend {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 12px;
-      font-size: 0.9rem;
-      margin-top: 10px;
-      color: var(--muted);
-    }
-
-    .dot {
-      display: inline-block;
-      width: 12px;
-      height: 12px;
-      border-radius: 50%;
-      margin-right: 6px;
-      vertical-align: middle;
-    }
-
-    code.kbd {
-      background: #21303a;
-      color: #fff;
-      padding: 2px 7px;
-      border-radius: 6px;
-      font-size: 0.8rem;
-    }
-
-    .delta-good { color: var(--good); }
-    .delta-bad { color: var(--bad); }
+    .delta-good { color: var(--positive); }
+    .delta-bad  { color: var(--negative); }
 
     @media (max-width: 1080px) {
-      .page {
-        grid-template-columns: 1fr;
-      }
-
-      .sidebar {
-        position: static;
-      }
-
-      .metrics {
-        grid-template-columns: 1fr;
-      }
-
-      .chart-wrap {
-        min-height: 420px;
-      }
+      .chart-wrap { min-height: 360px; }
     }
   </style>
 </head>
 <body>
-  <div class="page">
-    <aside class="sidebar panel">
-      <a class="back-link" href="./index.html">&larr; Back to main menu</a>
-      <div>
-        <h1>Expected Return Simulator</h1>
-        <p>
-          This dashboard uses random draws from the economy states below. It
-          shows that <strong>expected return is a long-run average over many repeats</strong>,
-          not the return that must happen on the very next draw.
-        </p>
-      </div>
+  <header class="topnav">
+    <div class="topnav-inner">
+      <a class="brand" href="./index.html">
+        <span class="brand-mark">FL</span>
+        Finance Learning Tools
+      </a>
+      <a class="nav-home" href="./index.html" aria-label="Back to all dashboards">
+        <span class="chev">←</span> All dashboards
+      </a>
+    </div>
+  </header>
 
-      <section class="sidebar-section">
-          <h2>State table</h2>
-          <table>
+  <main class="page">
+    <div class="dashboard">
+      <aside class="sidebar">
+        <div class="sidebar-header">
+          <span class="sidebar-eyebrow">Expected Return</span>
+          <h1>Expected Return Simulator</h1>
+          <p>Random draws from the economy states below show that <strong>expected return is a long-run average over many repeats</strong>, not the return that must happen on the very next draw.</p>
+        </div>
+
+        <div class="sidebar-section">
+          <h2 class="section-title"><span class="section-dot"></span>State table</h2>
+          <table class="data-table">
             <thead>
               <tr>
                 <th>State</th>
                 <th>Probability</th>
-                <th>Security L</th>
+                <th>Return L</th>
               </tr>
             </thead>
             <tbody>
@@ -349,78 +110,79 @@
               </tr>
             </tbody>
           </table>
-      </section>
-
-      <section class="sidebar-section">
-        <div class="formula">
-          <div><strong>Expected return of L</strong> = 0.5(-20%) + 0.5(70%) = <strong>25%</strong></div>
+          <div class="callout" style="margin-top: 14px;">
+            <strong>E(R<sub>L</sub>)</strong> = 0.5(-20%) + 0.5(70%) = <strong>25%</strong>
+          </div>
         </div>
-      </section>
 
-      <section class="sidebar-section">
-          <h2>Controls</h2>
-          <div class="controls">
-            <button class="primary" id="draw1">Draw once</button>
-            <button id="draw10">Draw 10</button>
-            <button id="draw100">Draw 100</button>
-            <button class="secondary" id="autoBtn">Start auto</button>
-            <button id="resetBtn">Reset</button>
+        <div class="sidebar-section">
+          <h2 class="section-title"><span class="section-dot"></span>Controls</h2>
+          <div class="btn-group">
+            <button class="btn btn-primary" id="draw1">Draw once</button>
+            <button class="btn" id="draw10">Draw 10</button>
+            <button class="btn" id="draw100">Draw 100</button>
+            <button class="btn" id="autoBtn">Start auto</button>
+            <button class="btn btn-ghost" id="resetBtn">Reset</button>
           </div>
-          <div class="small">
-            Keyboard shortcuts: <code class="kbd">Space</code> = 1 draw, <code class="kbd">1</code> = 10 draws, <code class="kbd">2</code> = 100 draws, <code class="kbd">A</code> = start/stop auto, <code class="kbd">R</code> = reset.
-          </div>
-      </section>
+          <p class="section-help" style="margin-top: 14px;">
+            Shortcuts — <span class="kbd">Space</span> 1 draw · <span class="kbd">1</span> 10 · <span class="kbd">2</span> 100 · <span class="kbd">A</span> auto · <span class="kbd">R</span> reset
+          </p>
+        </div>
 
-      <section class="sidebar-section panel-grid">
-          <div class="panel-grid">
+        <div class="sidebar-section">
+          <h2 class="section-title"><span class="section-dot"></span>Last draw</h2>
+          <div class="stack-sm">
             <div class="mini-card">
-              <div class="label small">Last draw</div>
-              <div id="lastState" style="margin-top:8px; font-size:18px; font-weight:700;">No draws yet</div>
-              <div id="lastReturn" class="small" style="margin-top:8px;">L: -</div>
+              <div class="label">State</div>
+              <div class="value" id="lastState">No draws yet</div>
+              <div class="sub" id="lastReturn">L: —</div>
             </div>
             <div class="mini-card">
-              <div class="label small">State counts</div>
-              <div style="margin-top:8px; font-size:17px;">
-                <span class="pill recession">Recession: <span id="recCount">0</span></span>
-                <span class="pill boom">Boom: <span id="boomCount">0</span></span>
+              <div class="label">State counts</div>
+              <div class="value" style="display: flex; gap: 8px; flex-wrap: wrap;">
+                <span class="pill pill-rose">Recession <span id="recCount">0</span></span>
+                <span class="pill pill-emerald">Boom <span id="boomCount">0</span></span>
               </div>
             </div>
           </div>
-      </section>
-    </aside>
+        </div>
+      </aside>
 
-    <main class="content">
-      <section class="metrics">
-            <article class="metric panel">
-              <div class="label">Trials</div>
-              <div class="value" id="trials">0</div>
-              <div class="sub">Number of random repeats</div>
-            </article>
-            <article class="metric panel">
-              <div class="label">Running average, L</div>
-              <div class="value" id="avgL">-</div>
-              <div class="sub">Expected = 25%</div>
-            </article>
-            <article class="metric panel">
-              <div class="label">Distance from expected</div>
-              <div class="value" id="distance">-</div>
-              <div class="sub">Absolute gap from 25%</div>
-            </article>
-      </section>
+      <section class="main-column">
+        <section class="metrics">
+          <article class="panel metric">
+            <div class="metric-label">Trials</div>
+            <div class="metric-value" id="trials">0</div>
+            <div class="metric-note">Number of random repeats</div>
+          </article>
+          <article class="panel metric">
+            <div class="metric-label">Running average, L</div>
+            <div class="metric-value" id="avgL">—</div>
+            <div class="metric-note">Expected = 25%</div>
+          </article>
+          <article class="panel metric is-accent">
+            <div class="metric-label">Distance from expected</div>
+            <div class="metric-value" id="distance">—</div>
+            <div class="metric-note">Absolute gap from 25%</div>
+          </article>
+        </section>
 
-      <section class="card panel">
-          <h2>Running average over time</h2>
-          <p>The solid line is the running average from the simulation. The dashed line is the expected return.</p>
+        <article class="plot">
+          <div class="plot-heading">
+            <h2>Running average over time</h2>
+            <p>The solid line is the running average from the simulation. The dashed line is the expected return of 25%.</p>
+          </div>
           <div class="chart-wrap">
             <canvas id="chart"></canvas>
           </div>
-          <div class="legend">
-            <span><span class="dot" style="background:#0f766e"></span>L running average</span>
-            <span><span class="dot" style="background:#99f6e4"></span>L expected = 25%</span>
+          <div class="plot-footer">
+            <span class="chip"><span class="chip-dot" style="background: #0f766e;"></span>Running average L</span>
+            <span class="chip"><span class="chip-dot" style="background: #94d1cc;"></span>Expected L = 25%</span>
           </div>
+        </article>
       </section>
-    </main>
-  </div>
+    </div>
+  </main>
 
   <script>
     const expectedL = 0.25;
@@ -443,16 +205,24 @@
       autoBtn: document.getElementById('autoBtn')
     };
 
-    function pct(x) {
-      return `${(x * 100).toFixed(2)}%`;
-    }
+    const PALETTE = {
+      grid: '#ebe7dc',
+      axis: '#9b958a',
+      text: '#6b665c',
+      line: '#0f766e',
+      expected: '#94d1cc',
+      boom: '#15803d',
+      recession: '#b4414b'
+    };
+
+    function pct(x) { return `${(x * 100).toFixed(2)}%`; }
 
     function resizeCanvas() {
       const canvas = document.getElementById('chart');
       const ratio = window.devicePixelRatio || 1;
       const rect = canvas.getBoundingClientRect();
       canvas.width = Math.max(640, Math.floor(rect.width * ratio));
-      canvas.height = Math.max(420, Math.floor(rect.height * ratio));
+      canvas.height = Math.max(440, Math.floor(rect.height * ratio));
       const ctx = canvas.getContext('2d');
       ctx.setTransform(ratio, 0, 0, ratio, 0, 0);
       renderChart();
@@ -482,13 +252,14 @@
       els.avgL.textContent = pct(avgL);
       const gap = Math.abs(avgL - expectedL);
       els.distance.textContent = pct(gap);
-      els.distance.className = 'value ' + (gap < 0.03 ? 'delta-good' : gap < 0.08 ? '' : 'delta-bad');
+      const distanceEl = document.getElementById('distance');
+      distanceEl.className = 'metric-value ' + (gap < 0.03 ? 'delta-good' : gap < 0.08 ? '' : 'delta-bad');
 
       els.boomCount.textContent = boomCount.toLocaleString();
       els.recCount.textContent = recCount.toLocaleString();
       els.lastState.innerHTML = state === 'Boom'
-        ? '<span class="pill boom">Boom</span>'
-        : '<span class="pill recession">Recession</span>';
+        ? '<span class="pill pill-emerald">Boom</span>'
+        : '<span class="pill pill-rose">Recession</span>';
       els.lastReturn.textContent = `L: ${pct(l)}`;
     }
 
@@ -500,7 +271,7 @@
       const h = canvas.height / ratio;
       ctx.clearRect(0, 0, w, h);
 
-      const m = { top: 24, right: 18, bottom: 44, left: 56 };
+      const m = { top: 20, right: 24, bottom: 44, left: 60 };
       const innerW = w - m.left - m.right;
       const innerH = h - m.top - m.bottom;
 
@@ -509,68 +280,79 @@
 
       function xScale(i) {
         if (Math.max(n, 1) === 1) return m.left;
-        return m.left + (i / (Math.max(n - 1, 1))) * innerW;
+        return m.left + (i / Math.max(n - 1, 1)) * innerW;
       }
       function yScale(v) {
         return m.top + (1 - (v - yMin) / (yMax - yMin)) * innerH;
       }
 
-      ctx.strokeStyle = '#e5e7eb';
-      ctx.lineWidth = 1;
-      ctx.font = '12px Arial';
-      ctx.fillStyle = '#6b7280';
-      for (let val = -0.2; val <= 0.8; val += 0.1) {
+      // Gridlines + y labels
+      ctx.font = "11px 'JetBrains Mono', monospace";
+      ctx.fillStyle = PALETTE.text;
+      for (let val = -0.2; val <= 0.8 + 0.0001; val += 0.1) {
         const y = yScale(val);
+        ctx.strokeStyle = PALETTE.grid;
+        ctx.lineWidth = 1;
         ctx.beginPath();
         ctx.moveTo(m.left, y);
         ctx.lineTo(w - m.right, y);
         ctx.stroke();
-        ctx.fillText(`${Math.round(val * 100)}%`, 8, y + 4);
+        ctx.fillText(`${Math.round(val * 100)}%`, 12, y + 4);
       }
 
-      ctx.strokeStyle = '#9ca3af';
-      ctx.lineWidth = 1.5;
+      // Axes
+      ctx.strokeStyle = PALETTE.axis;
+      ctx.lineWidth = 1;
       ctx.beginPath();
       ctx.moveTo(m.left, m.top);
       ctx.lineTo(m.left, h - m.bottom);
       ctx.lineTo(w - m.right, h - m.bottom);
       ctx.stroke();
 
-      drawDashedLine(ctx, m.left, yScale(expectedL), w - m.right, yScale(expectedL), '#99f6e4');
-      ctx.fillStyle = '#065f46';
-      ctx.fillText('Expected L = 25%', w - 135, yScale(expectedL) - 6);
+      // Expected line (dashed)
+      drawDashedLine(ctx, m.left, yScale(expectedL), w - m.right, yScale(expectedL), PALETTE.expected);
+      ctx.fillStyle = '#0b5a54';
+      ctx.font = "11px 'Inter', sans-serif";
+      ctx.fillText('E(L) = 25%', w - m.right - 78, yScale(expectedL) - 6);
 
+      // Running average series
       if (n > 0) {
-        drawSeries(ctx, avgSeriesL, '#0f766e', xScale, yScale);
+        drawSeries(ctx, avgSeriesL, PALETTE.line, xScale, yScale);
         const xLast = xScale(n - 1);
-        circle(ctx, xLast, yScale(avgSeriesL[n - 1]), 4, '#0f766e');
+        circle(ctx, xLast, yScale(avgSeriesL[n - 1]), 4, PALETTE.line);
       }
 
-      ctx.fillStyle = '#6b7280';
+      // X axis ticks
+      ctx.fillStyle = PALETTE.text;
+      ctx.font = "11px 'JetBrains Mono', monospace";
       const tickCount = 6;
       for (let t = 0; t <= tickCount; t++) {
         const x = m.left + (t / tickCount) * innerW;
         const trialNum = Math.round((t / tickCount) * n);
+        ctx.strokeStyle = PALETTE.axis;
         ctx.beginPath();
         ctx.moveTo(x, h - m.bottom);
-        ctx.lineTo(x, h - m.bottom + 6);
-        ctx.strokeStyle = '#9ca3af';
+        ctx.lineTo(x, h - m.bottom + 5);
         ctx.stroke();
-        ctx.fillText(String(trialNum), x - 8, h - 18);
+        ctx.fillText(String(trialNum), x - 8, h - 20);
       }
 
-      ctx.fillStyle = '#374151';
-      ctx.fillText('Trial number', w / 2 - 28, h - 6);
+      // Axis titles
+      ctx.fillStyle = '#1f1d1a';
+      ctx.font = "600 12px 'Inter', sans-serif";
+      ctx.fillText('Trial', w / 2 - 12, h - 6);
       ctx.save();
-      ctx.translate(14, h / 2 + 18);
+      ctx.translate(18, h / 2 + 18);
       ctx.rotate(-Math.PI / 2);
       ctx.fillText('Return', 0, 0);
       ctx.restore();
 
       if (n === 0) {
-        ctx.fillStyle = '#6b7280';
-        ctx.font = '16px Arial';
-        ctx.fillText('Press Draw once to start the simulation', w / 2 - 130, h / 2);
+        ctx.fillStyle = PALETTE.text;
+        ctx.font = "14px 'Inter', sans-serif";
+        ctx.textAlign = 'center';
+        ctx.fillText('Press Draw once to start the simulation', w / 2, h / 2);
+        ctx.textAlign = 'start';
       }
     }
 
@@ -583,7 +365,7 @@
         else ctx.lineTo(x, y);
       }
       ctx.strokeStyle = color;
-      ctx.lineWidth = 2.5;
+      ctx.lineWidth = 2.25;
       ctx.stroke();
     }
 
@@ -591,7 +373,7 @@
       ctx.save();
       ctx.setLineDash([7, 6]);
       ctx.strokeStyle = color;
-      ctx.lineWidth = 2;
+      ctx.lineWidth = 1.8;
       ctx.beginPath();
       ctx.moveTo(x1, y1);
       ctx.lineTo(x2, y2);
@@ -614,13 +396,14 @@
       avgSeriesL = [];
       stopAuto();
       els.trials.textContent = '0';
-      els.avgL.textContent = '-';
-      els.distance.textContent = '-';
-      els.distance.className = 'value';
+      els.avgL.textContent = '—';
+      const distanceEl = document.getElementById('distance');
+      distanceEl.textContent = '—';
+      distanceEl.className = 'metric-value';
       els.boomCount.textContent = '0';
       els.recCount.textContent = '0';
       els.lastState.textContent = 'No draws yet';
-      els.lastReturn.textContent = 'L: -';
+      els.lastReturn.textContent = 'L: —';
       renderChart();
     }
 

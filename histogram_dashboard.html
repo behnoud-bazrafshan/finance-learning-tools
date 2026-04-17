@@ -1,427 +1,337 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="theme-color" content="#0d6b74">
-    <link rel="icon" type="image/svg+xml" href="./favicon.svg">
-    <link rel="manifest" href="./manifest.json">
-    <title>Interactive Frequency Distribution</title>
-    <style>
-        :root {
-            --bg: #f6efe2;
-            --panel: rgba(255, 252, 246, 0.88);
-            --panel-strong: #fffaf2;
-            --text: #21303a;
-            --muted: #62727e;
-            --line: #d8ccbb;
-            --accent: #0d6b74;
-            --accent-strong: #0b5c63;
-            --highlight: #d97706;
-            --bar: #a9bed3;
-            --bar-border: #5a7392;
-            --shadow: 0 18px 48px rgba(49, 57, 68, 0.14);
-        }
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#0f766e" />
+  <link rel="icon" type="image/svg+xml" href="./favicon.svg" />
+  <link rel="manifest" href="./manifest.json" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap"
+    rel="stylesheet"
+  />
+  <link rel="stylesheet" href="./styles.css" />
+  <title>Histogram Builder · Finance Learning Tools</title>
+  <style>
+    .chart-frame {
+      position: relative;
+      width: 100%;
+      padding-left: 56px;
+      padding-right: 4px;
+    }
 
-        * {
-            box-sizing: border-box;
-        }
+    .chart-container {
+      display: flex;
+      align-items: flex-end;
+      justify-content: center;
+      height: 380px;
+      border-left: 1px solid var(--border-strong);
+      border-bottom: 1px solid var(--border-strong);
+      width: 100%;
+      position: relative;
+      background: var(--surface);
+      border-radius: 0;
+    }
 
-        body {
-            font-family: "Avenir Next", "Trebuchet MS", "Segoe UI", sans-serif;
-            background:
-                radial-gradient(circle at top left, rgba(13, 107, 116, 0.18), transparent 24%),
-                radial-gradient(circle at bottom right, rgba(201, 79, 70, 0.14), transparent 28%),
-                linear-gradient(180deg, #fbf5ea 0%, #f1e6d3 100%);
-            color: var(--text);
-            margin: 0;
-        }
-        .page {
-            display: grid;
-            grid-template-columns: 320px minmax(0, 1fr);
-            gap: 24px;
-            padding: 20px;
-            align-items: start;
-        }
-        .panel {
-            background: var(--panel);
-            border: 1px solid rgba(255, 255, 255, 0.5);
-            border-radius: 24px;
-            box-shadow: var(--shadow);
-            backdrop-filter: blur(12px);
-        }
-        .sidebar {
-            padding: 18px 18px 24px;
-            position: sticky;
-            top: 20px;
-            display: grid;
-            gap: 16px;
-        }
-        .back-link {
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            color: var(--accent);
-            text-decoration: none;
-            font-size: 0.9rem;
-            font-weight: 700;
-            letter-spacing: 0.04em;
-            text-transform: uppercase;
-        }
-        .back-link:hover,
-        .back-link:focus-visible {
-            text-decoration: underline;
-        }
-        .sidebar h1 {
-            margin: 2px 0 8px;
-            font-family: Georgia, "Times New Roman", serif;
-            font-size: 1.75rem;
-            line-height: 1.02;
-        }
-        .sidebar p {
-            margin: 0;
-            color: var(--muted);
-            font-size: 0.95rem;
-            line-height: 1.5;
-        }
-        .sidebar-section {
-            display: grid;
-            gap: 12px;
-            padding: 14px;
-            border-radius: 18px;
-            background: var(--panel-strong);
-            border: 1px solid rgba(216, 204, 187, 0.8);
-        }
-        .sidebar-section h2 {
-            margin: 0;
-            font-size: 1.08rem;
-        }
-        .controls {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 10px;
-        }
-        button {
-            padding: 11px 16px;
-            cursor: pointer;
-            border: 1px solid var(--line);
-            border-radius: 10px;
-            background-color: rgba(255, 255, 255, 0.92);
-            color: var(--text);
-            transition: border-color 0.3s;
-            font: inherit;
-            font-weight: 700;
-        }
-        button:hover { border-color: var(--accent); }
-        button:disabled { background-color: #cccccc; cursor: not-allowed; }
-        .status {
-            font-size: 1rem;
-            font-weight: 700;
-            min-height: 25px;
-            color: var(--accent-strong);
-        }
-        .content {
-            display: grid;
-            gap: 16px;
-        }
-        .card {
-            padding: 16px 16px 12px;
-        }
-        .card h2 {
-            margin: 0;
-            font-size: 1.15rem;
-        }
-        .card p {
-            margin: 6px 0 12px;
-            color: var(--muted);
-            line-height: 1.5;
-        }
-        .chart-frame {
-            position: relative;
-            width: 100%;
-        }
-        .chart-container {
-            display: flex;
-            align-items: flex-end;
-            justify-content: center;
-            height: 400px;
-            border-left: 2px solid rgba(99, 114, 126, 0.45);
-            width: 100%;
-            position: relative;
-            border-radius: 18px;
-            background:
-                linear-gradient(180deg, rgba(255, 255, 255, 0.75), rgba(255, 255, 255, 0.88)),
-                linear-gradient(135deg, rgba(121, 181, 187, 0.12), rgba(201, 79, 70, 0.08));
-            border-top: 1px solid rgba(216, 204, 187, 0.8);
-            border-right: 1px solid rgba(216, 204, 187, 0.8);
-        }
-        .y-axis {
-            position: absolute;
-            left: -30px;
-            height: 100%;
-            display: flex;
-            flex-direction: column-reverse;
-            justify-content: space-between;
-            font-size: 12px;
-            font-weight: bold;
-        }
-        .bin-column {
-            flex: 1;
-            display: flex;
-            flex-direction: column-reverse;
-            align-items: center;
-            height: 100%;
-            margin: 0 1px;
-            position: relative;
-        }
-        .data-block {
-            width: 100%;
-            height: 0;
-            background-color: var(--bar);
-            border: 1px solid var(--bar-border);
-            box-sizing: border-box;
-            transition: height 0.3s ease-in-out, background-color 0.3s;
-        }
-        .data-block.highlight {
-            background-color: var(--highlight);
-        }
-        .x-axis-label {
-            position: absolute;
-            bottom: -25px;
-            font-size: 12px;
-            left: -10px;
-            transform: translateX(-50%);
-        }
-        .x-axis-title {
-            margin-top: 30px;
-            font-weight: bold;
-            font-size: 16px;
-            color: var(--muted);
-        }
-        .y-axis-title {
-            position: absolute;
-            left: -70px;
-            top: 50%;
-            transform: translateY(-50%) rotate(-90deg);
-            font-weight: bold;
-            font-size: 16px;
-            color: var(--muted);
-        }
-        @media (max-width: 1080px) {
-            .page {
-                grid-template-columns: 1fr;
-            }
-            .sidebar {
-                position: static;
-            }
-            .chart-frame {
-                padding-left: 20px;
-            }
-        }
-    </style>
+    .y-axis {
+      position: absolute;
+      left: -36px;
+      height: 100%;
+      display: flex;
+      flex-direction: column-reverse;
+      justify-content: space-between;
+      font-size: 11px;
+      color: var(--text-muted);
+      font-variant-numeric: tabular-nums;
+      font-family: var(--font-mono);
+    }
+
+    .bin-column {
+      flex: 1;
+      display: flex;
+      flex-direction: column-reverse;
+      align-items: center;
+      height: 100%;
+      margin: 0 1px;
+      position: relative;
+    }
+
+    .data-block {
+      width: 100%;
+      height: 0;
+      background-color: var(--c-teal);
+      border-top: 1px solid rgba(255, 255, 255, 0.65);
+      box-sizing: border-box;
+      transition: height 260ms ease, background-color 300ms ease;
+    }
+
+    .data-block.highlight {
+      background-color: var(--c-amber);
+    }
+
+    .x-axis-label {
+      position: absolute;
+      bottom: -22px;
+      font-size: 11px;
+      left: -10px;
+      transform: translateX(-50%);
+      color: var(--text-muted);
+      font-family: var(--font-mono);
+    }
+
+    .x-axis-title {
+      margin-top: 28px;
+      font-weight: 600;
+      font-size: 0.88rem;
+      color: var(--text-muted);
+      text-align: center;
+    }
+
+    .y-axis-title {
+      position: absolute;
+      left: 4px;
+      top: 50%;
+      transform: translateY(-50%) rotate(-90deg);
+      transform-origin: center;
+      font-weight: 600;
+      font-size: 0.88rem;
+      color: var(--text-muted);
+      white-space: nowrap;
+    }
+
+    .status-card {
+      padding: 14px 16px;
+      border-radius: var(--radius-sm);
+      background: var(--surface-muted);
+      border: 1px solid var(--border);
+      font-size: 0.9rem;
+      line-height: 1.5;
+      color: var(--text);
+      min-height: 52px;
+    }
+
+    .status-card strong {
+      color: var(--accent-strong);
+    }
+  </style>
 </head>
 <body>
-    <div class="page">
-        <aside class="sidebar panel">
-            <a class="back-link" href="./index.html">&larr; Back to main menu</a>
-            <div>
-                <h1>Histogram Dashboard</h1>
-                <p>This dashboard builds a frequency distribution from historical Canadian common stock returns. Use the step controls to show how individual annual observations accumulate into bins and become a histogram.</p>
-            </div>
-
-            <section class="sidebar-section">
-                <h2>Animation controls</h2>
-                <p>Advance one observation at a time, animate the full sequence, or jump directly to the completed distribution.</p>
-                <div class="controls">
-                    <button id="btn-step" onclick="step()">Step Forward</button>
-                    <button id="btn-play" onclick="playAll()">Play All</button>
-                    <button id="btn-final" onclick="showFinal()">Show Final Result</button>
-                    <button id="btn-reset" onclick="reset()">Reset</button>
-                </div>
-            </section>
-
-            <section class="sidebar-section">
-                <div class="status" id="status-text">Click 'Step Forward' to begin.</div>
-            </section>
-        </aside>
-
-        <main class="content">
-            <section class="card panel">
-                <h2>Frequency Distribution of Returns on Canadian Common Stocks</h2>
-                <p>Annual returns from 1948 to 2022 are grouped into return intervals. The tallest bars show where the historical data has clustered most often.</p>
-
-                <div class="chart-frame">
-                    <div class="y-axis-title">Number of years</div>
-                    <div class="chart-container" id="chart">
-                        <div class="y-axis" id="y-axis-labels"></div>
-                    </div>
-                    <div class="x-axis-title">Return (%)</div>
-                </div>
-            </section>
-        </main>
+  <header class="topnav">
+    <div class="topnav-inner">
+      <a class="brand" href="./index.html">
+        <span class="brand-mark">FL</span>
+        Finance Learning Tools
+      </a>
+      <a class="nav-home" href="./index.html" aria-label="Back to all dashboards">
+        <span class="chev">←</span> All dashboards
+      </a>
     </div>
+  </header>
 
-<script>
+  <main class="page">
+    <div class="dashboard">
+      <aside class="sidebar">
+        <div class="sidebar-header">
+          <span class="sidebar-eyebrow">Data Distribution</span>
+          <h1>Histogram Builder</h1>
+          <p>Build a frequency distribution from historical Canadian common stock returns. Each year lands in its bin so you can see the histogram form one observation at a time.</p>
+        </div>
+
+        <div class="sidebar-section">
+          <h2 class="section-title"><span class="section-dot"></span>Animation</h2>
+          <p class="section-help">Advance one observation at a time, animate the full sequence, or jump to the completed distribution.</p>
+          <div class="btn-group">
+            <button class="btn btn-primary" id="btn-step" onclick="step()">Step forward</button>
+            <button class="btn" id="btn-play" onclick="playAll()">Play all</button>
+            <button class="btn" id="btn-final" onclick="showFinal()">Skip to end</button>
+            <button class="btn btn-ghost" id="btn-reset" onclick="reset()">Reset</button>
+          </div>
+        </div>
+
+        <div class="sidebar-section">
+          <h2 class="section-title"><span class="section-dot"></span>Status</h2>
+          <div class="status-card" id="status-text">Click <strong>Step forward</strong> to begin.</div>
+        </div>
+      </aside>
+
+      <section class="main-column">
+        <article class="plot">
+          <div class="plot-heading">
+            <h2>Frequency distribution of Canadian common stock returns</h2>
+            <p>Annual returns from 1948 to 2022 grouped into 5% intervals. Tallest bars mark the most common range.</p>
+          </div>
+
+          <div class="chart-frame">
+            <div class="y-axis-title">Number of years</div>
+            <div class="chart-container" id="chart">
+              <div class="y-axis" id="y-axis-labels"></div>
+            </div>
+            <div class="x-axis-title">Annual return (%)</div>
+          </div>
+        </article>
+      </section>
+    </div>
+  </main>
+
+  <script>
     const returnsData = [
-        {year: 1948, return: 12.25}, {year: 1949, return: 23.85}, {year: 1950, return: 51.69}, {year: 1951, return: 25.44},
-        {year: 1952, return: 0.01}, {year: 1953, return: 2.56}, {year: 1954, return: 39.37}, {year: 1955, return: 27.68},
-        {year: 1956, return: 12.68}, {year: 1957, return: -20.58}, {year: 1958, return: 31.25}, {year: 1959, return: 4.59},
-        {year: 1960, return: 1.78}, {year: 1961, return: 32.75}, {year: 1962, return: -7.09}, {year: 1963, return: 15.60},
-        {year: 1964, return: 25.43}, {year: 1965, return: 6.67}, {year: 1966, return: -7.07}, {year: 1967, return: 18.09},
-        {year: 1968, return: 22.45}, {year: 1969, return: -0.81}, {year: 1970, return: -3.57}, {year: 1971, return: 8.01},
-        {year: 1972, return: 27.37}, {year: 1973, return: 0.27}, {year: 1974, return: -25.93}, {year: 1975, return: 18.48},
-        {year: 1976, return: 11.02}, {year: 1977, return: 10.71}, {year: 1978, return: 29.72}, {year: 1979, return: 44.77},
-        {year: 1980, return: 30.13}, {year: 1981, return: -10.25}, {year: 1982, return: 5.54}, {year: 1983, return: 35.49},
-        {year: 1984, return: -2.39}, {year: 1985, return: 25.07}, {year: 1986, return: 8.95}, {year: 1987, return: 5.88},
-        {year: 1988, return: 11.08}, {year: 1989, return: 21.37}, {year: 1990, return: -14.80}, {year: 1991, return: 12.02},
-        {year: 1992, return: -1.43}, {year: 1993, return: 32.55}, {year: 1994, return: -0.18}, {year: 1995, return: 14.53},
-        {year: 1996, return: 28.35}, {year: 1997, return: 14.98}, {year: 1998, return: -1.58}, {year: 1999, return: 31.59},
-        {year: 2000, return: 7.41}, {year: 2001, return: -12.60}, {year: 2002, return: -12.40}, {year: 2003, return: 26.70},
-        {year: 2004, return: 14.50}, {year: 2005, return: 23.29}, {year: 2006, return: 17.30}, {year: 2007, return: 9.80},
-        {year: 2008, return: -33.00}, {year: 2009, return: 34.35}, {year: 2010, return: 17.27}, {year: 2011, return: -8.57},
-        {year: 2012, return: 5.41}, {year: 2013, return: 9.55}, {year: 2014, return: 7.42}, {year: 2015, return: -8.32},
-        {year: 2016, return: 21.08}, {year: 2017, return: 9.10}, {year: 2018, return: -8.88}, {year: 2019, return: 22.88},
-        {year: 2020, return: 1.78}, {year: 2021, return: 20.64}, {year: 2022, return: -9.44}
+      {year: 1948, return: 12.25}, {year: 1949, return: 23.85}, {year: 1950, return: 51.69}, {year: 1951, return: 25.44},
+      {year: 1952, return: 0.01}, {year: 1953, return: 2.56}, {year: 1954, return: 39.37}, {year: 1955, return: 27.68},
+      {year: 1956, return: 12.68}, {year: 1957, return: -20.58}, {year: 1958, return: 31.25}, {year: 1959, return: 4.59},
+      {year: 1960, return: 1.78}, {year: 1961, return: 32.75}, {year: 1962, return: -7.09}, {year: 1963, return: 15.60},
+      {year: 1964, return: 25.43}, {year: 1965, return: 6.67}, {year: 1966, return: -7.07}, {year: 1967, return: 18.09},
+      {year: 1968, return: 22.45}, {year: 1969, return: -0.81}, {year: 1970, return: -3.57}, {year: 1971, return: 8.01},
+      {year: 1972, return: 27.37}, {year: 1973, return: 0.27}, {year: 1974, return: -25.93}, {year: 1975, return: 18.48},
+      {year: 1976, return: 11.02}, {year: 1977, return: 10.71}, {year: 1978, return: 29.72}, {year: 1979, return: 44.77},
+      {year: 1980, return: 30.13}, {year: 1981, return: -10.25}, {year: 1982, return: 5.54}, {year: 1983, return: 35.49},
+      {year: 1984, return: -2.39}, {year: 1985, return: 25.07}, {year: 1986, return: 8.95}, {year: 1987, return: 5.88},
+      {year: 1988, return: 11.08}, {year: 1989, return: 21.37}, {year: 1990, return: -14.80}, {year: 1991, return: 12.02},
+      {year: 1992, return: -1.43}, {year: 1993, return: 32.55}, {year: 1994, return: -0.18}, {year: 1995, return: 14.53},
+      {year: 1996, return: 28.35}, {year: 1997, return: 14.98}, {year: 1998, return: -1.58}, {year: 1999, return: 31.59},
+      {year: 2000, return: 7.41}, {year: 2001, return: -12.60}, {year: 2002, return: -12.40}, {year: 2003, return: 26.70},
+      {year: 2004, return: 14.50}, {year: 2005, return: 23.29}, {year: 2006, return: 17.30}, {year: 2007, return: 9.80},
+      {year: 2008, return: -33.00}, {year: 2009, return: 34.35}, {year: 2010, return: 17.27}, {year: 2011, return: -8.57},
+      {year: 2012, return: 5.41}, {year: 2013, return: 9.55}, {year: 2014, return: 7.42}, {year: 2015, return: -8.32},
+      {year: 2016, return: 21.08}, {year: 2017, return: 9.10}, {year: 2018, return: -8.88}, {year: 2019, return: 22.88},
+      {year: 2020, return: 1.78}, {year: 2021, return: 20.64}, {year: 2022, return: -9.44}
     ];
 
     const binEdges = [-35, -30, -25, -20, -15, -10, -5, 0, 5, 10, 15, 20, 25, 30, 35, 40, 45, 50, 55, 60];
 
     function computeMaxBinCount() {
-        const counts = new Array(binEdges.length - 1).fill(0);
-        returnsData.forEach(point => {
-            const idx = getBinIndex(point.return);
-            counts[idx] += 1;
-        });
-        return Math.max(...counts);
+      const counts = new Array(binEdges.length - 1).fill(0);
+      returnsData.forEach(point => {
+        const idx = getBinIndex(point.return);
+        counts[idx] += 1;
+      });
+      return Math.max(...counts);
     }
 
     const maxObservedCount = computeMaxBinCount();
     const maxCount = maxObservedCount + 1;
-    const chartHeight = 400;
+    const chartHeight = 380;
     const blockHeight = chartHeight / maxCount;
 
     let currentIndex = 0;
     let playInterval = null;
 
     function initChart() {
-        const chart = document.getElementById('chart');
-        const yAxisLabels = document.getElementById('y-axis-labels');
+      const chart = document.getElementById('chart');
+      const yAxisLabels = document.getElementById('y-axis-labels');
 
-        for (let i = 0; i <= maxCount; i++) {
-            const label = document.createElement('div');
-            label.innerText = i;
-            label.style.height = blockHeight + 'px';
-            label.style.display = 'flex';
-            label.style.alignItems = 'flex-end';
-            yAxisLabels.appendChild(label);
+      for (let i = 0; i <= maxCount; i++) {
+        const label = document.createElement('div');
+        label.innerText = i;
+        label.style.height = blockHeight + 'px';
+        label.style.display = 'flex';
+        label.style.alignItems = 'flex-end';
+        yAxisLabels.appendChild(label);
+      }
+
+      for (let i = 0; i < binEdges.length - 1; i++) {
+        const col = document.createElement('div');
+        col.className = 'bin-column';
+        col.id = 'bin-' + i;
+
+        const label = document.createElement('div');
+        label.className = 'x-axis-label';
+        label.innerText = binEdges[i];
+        col.appendChild(label);
+
+        if (i === binEdges.length - 2) {
+          const endLabel = document.createElement('div');
+          endLabel.className = 'x-axis-label';
+          endLabel.innerText = binEdges[i + 1];
+          endLabel.style.left = '100%';
+          col.appendChild(endLabel);
         }
 
-        for (let i = 0; i < binEdges.length - 1; i++) {
-            const col = document.createElement('div');
-            col.className = 'bin-column';
-            col.id = 'bin-' + i;
-
-            const label = document.createElement('div');
-            label.className = 'x-axis-label';
-            label.innerText = binEdges[i];
-            col.appendChild(label);
-
-            if (i === binEdges.length - 2) {
-                const endLabel = document.createElement('div');
-                endLabel.className = 'x-axis-label';
-                endLabel.innerText = binEdges[i + 1];
-                endLabel.style.left = '100%';
-                col.appendChild(endLabel);
-            }
-
-            chart.appendChild(col);
-        }
+        chart.appendChild(col);
+      }
     }
 
     function getBinIndex(val) {
-        for (let i = 0; i < binEdges.length - 1; i++) {
-            if (val >= binEdges[i] && val < binEdges[i + 1]) return i;
-        }
-        return binEdges.length - 2;
+      for (let i = 0; i < binEdges.length - 1; i++) {
+        if (val >= binEdges[i] && val < binEdges[i + 1]) return i;
+      }
+      return binEdges.length - 2;
     }
 
     function addBlock(dataPoint) {
-        const binIdx = getBinIndex(dataPoint.return);
-        const col = document.getElementById('bin-' + binIdx);
+      const binIdx = getBinIndex(dataPoint.return);
+      const col = document.getElementById('bin-' + binIdx);
 
-        const block = document.createElement('div');
-        block.className = 'data-block highlight';
-        block.title = `Year: ${dataPoint.year}, Return: ${dataPoint.return}%`;
+      const block = document.createElement('div');
+      block.className = 'data-block highlight';
+      block.title = `Year: ${dataPoint.year}, Return: ${dataPoint.return}%`;
 
-        col.appendChild(block);
+      col.appendChild(block);
 
-        setTimeout(() => {
-            block.style.height = blockHeight + 'px';
-        }, 10);
+      setTimeout(() => { block.style.height = blockHeight + 'px'; }, 10);
+      setTimeout(() => { block.classList.remove('highlight'); }, 420);
 
-        setTimeout(() => {
-            block.classList.remove('highlight');
-        }, 400);
-
-        document.getElementById('status-text').innerHTML = `Processing Year: <strong>${dataPoint.year}</strong> | Return: <strong>${dataPoint.return}%</strong> falls into bin [${binEdges[binIdx]} to ${binEdges[binIdx + 1]})`;
+      document.getElementById('status-text').innerHTML =
+        `Year <strong>${dataPoint.year}</strong> · return <strong>${dataPoint.return}%</strong> → bin [${binEdges[binIdx]}, ${binEdges[binIdx + 1]})`;
     }
 
     function step() {
-        if (currentIndex < returnsData.length) {
-            addBlock(returnsData[currentIndex]);
-            currentIndex++;
-        } else {
-            document.getElementById('status-text').innerText = 'All data processed. Final distribution complete.';
-            clearInterval(playInterval);
-            document.getElementById('btn-step').disabled = true;
-            document.getElementById('btn-play').disabled = true;
-            document.getElementById('btn-final').disabled = true;
-        }
-    }
-
-    function playAll() {
-        document.getElementById('btn-play').disabled = true;
-        document.getElementById('btn-step').disabled = true;
-        playInterval = setInterval(() => {
-            step();
-            if (currentIndex >= returnsData.length) clearInterval(playInterval);
-        }, 150);
-    }
-
-    function showFinal() {
+      if (currentIndex < returnsData.length) {
+        addBlock(returnsData[currentIndex]);
+        currentIndex++;
+      } else {
+        document.getElementById('status-text').innerText = 'All observations placed. Distribution complete.';
         clearInterval(playInterval);
-        while (currentIndex < returnsData.length) {
-            const binIdx = getBinIndex(returnsData[currentIndex].return);
-            const col = document.getElementById('bin-' + binIdx);
-            const block = document.createElement('div');
-            block.className = 'data-block';
-            block.style.height = blockHeight + 'px';
-            block.title = `Year: ${returnsData[currentIndex].year}, Return: ${returnsData[currentIndex].return}%`;
-            col.appendChild(block);
-            currentIndex++;
-        }
-        document.getElementById('status-text').innerText = 'All data processed. Final distribution complete.';
         document.getElementById('btn-step').disabled = true;
         document.getElementById('btn-play').disabled = true;
         document.getElementById('btn-final').disabled = true;
+      }
+    }
+
+    function playAll() {
+      document.getElementById('btn-play').disabled = true;
+      document.getElementById('btn-step').disabled = true;
+      playInterval = setInterval(() => {
+        step();
+        if (currentIndex >= returnsData.length) clearInterval(playInterval);
+      }, 150);
+    }
+
+    function showFinal() {
+      clearInterval(playInterval);
+      while (currentIndex < returnsData.length) {
+        const binIdx = getBinIndex(returnsData[currentIndex].return);
+        const col = document.getElementById('bin-' + binIdx);
+        const block = document.createElement('div');
+        block.className = 'data-block';
+        block.style.height = blockHeight + 'px';
+        block.title = `Year: ${returnsData[currentIndex].year}, Return: ${returnsData[currentIndex].return}%`;
+        col.appendChild(block);
+        currentIndex++;
+      }
+      document.getElementById('status-text').innerText = 'All observations placed. Distribution complete.';
+      document.getElementById('btn-step').disabled = true;
+      document.getElementById('btn-play').disabled = true;
+      document.getElementById('btn-final').disabled = true;
     }
 
     function reset() {
-        clearInterval(playInterval);
-        currentIndex = 0;
-        document.getElementById('status-text').innerText = "Click 'Step Forward' to begin.";
-        document.getElementById('btn-step').disabled = false;
-        document.getElementById('btn-play').disabled = false;
-        document.getElementById('btn-final').disabled = false;
+      clearInterval(playInterval);
+      currentIndex = 0;
+      document.getElementById('status-text').innerHTML = "Click <strong>Step forward</strong> to begin.";
+      document.getElementById('btn-step').disabled = false;
+      document.getElementById('btn-play').disabled = false;
+      document.getElementById('btn-final').disabled = false;
 
-        for (let i = 0; i < binEdges.length - 1; i++) {
-            const col = document.getElementById('bin-' + i);
-            const blocks = col.querySelectorAll('.data-block');
-            blocks.forEach(b => b.remove());
-        }
+      for (let i = 0; i < binEdges.length - 1; i++) {
+        const col = document.getElementById('bin-' + i);
+        const blocks = col.querySelectorAll('.data-block');
+        blocks.forEach(b => b.remove());
+      }
     }
 
     initChart();
-</script>
+  </script>
 </body>
 </html>
