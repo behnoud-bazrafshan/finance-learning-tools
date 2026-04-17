@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#0056b3">
+    <link rel="icon" type="image/svg+xml" href="./favicon.svg">
+    <link rel="manifest" href="./manifest.json">
+    <title>Interactive Frequency Distribution</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f9;
+            color: #333;
+            text-align: center;
+            margin: 0;
+            padding: 20px;
+        }
+        h2 { margin-bottom: 5px; }
+        .controls {
+            margin: 20px 0;
+            padding: 15px;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            display: inline-block;
+        }
+        button {
+            padding: 10px 20px;
+            margin: 0 5px;
+            font-size: 16px;
+            cursor: pointer;
+            border: none;
+            border-radius: 5px;
+            background-color: #0056b3;
+            color: white;
+            transition: background 0.3s;
+        }
+        button:hover { background-color: #004494; }
+        button:disabled { background-color: #cccccc; cursor: not-allowed; }
+        .status {
+            font-size: 18px;
+            font-weight: bold;
+            margin: 15px 0;
+            min-height: 25px;
+            color: #d9534f;
+        }
+        .chart-container {
+            display: flex;
+            align-items: flex-end;
+            justify-content: center;
+            height: 400px;
+            margin: 0 auto;
+            border-bottom: 2px solid #333;
+            border-left: 2px solid #333;
+            padding-bottom: 5px;
+            width: 90%;
+            max-width: 1000px;
+            position: relative;
+        }
+        .y-axis {
+            position: absolute;
+            left: -30px;
+            height: 100%;
+            display: flex;
+            flex-direction: column-reverse;
+            justify-content: space-between;
+            font-size: 12px;
+            font-weight: bold;
+        }
+        .bin-column {
+            flex: 1;
+            display: flex;
+            flex-direction: column-reverse;
+            align-items: center;
+            height: 100%;
+            margin: 0 1px;
+            position: relative;
+        }
+        .data-block {
+            width: 100%;
+            height: 0;
+            background-color: #b3c2d6;
+            border: 1px solid #5a7392;
+            box-sizing: border-box;
+            transition: height 0.3s ease-in-out, background-color 0.3s;
+        }
+        .data-block.highlight {
+            background-color: #ff9800;
+        }
+        .x-axis-label {
+            position: absolute;
+            bottom: -25px;
+            font-size: 12px;
+            left: -10px;
+            transform: translateX(-50%);
+        }
+        .x-axis-title {
+            margin-top: 30px;
+            font-weight: bold;
+            font-size: 16px;
+        }
+        .y-axis-title {
+            position: absolute;
+            left: -70px;
+            top: 50%;
+            transform: translateY(-50%) rotate(-90deg);
+            font-weight: bold;
+            font-size: 16px;
+        }
+    </style>
+</head>
+<body>
+
+    <h2>Frequency Distribution of Returns on Canadian Common Stocks</h2>
+    <p>Annual Returns (1948 - 2022)</p>
+
+    <div class="controls">
+        <button id="btn-step" onclick="step()">Step Forward</button>
+        <button id="btn-play" onclick="playAll()">Play All</button>
+        <button id="btn-final" onclick="showFinal()">Show Final Result</button>
+        <button id="btn-reset" onclick="reset()">Reset</button>
+    </div>
+
+    <div class="status" id="status-text">Click 'Step Forward' to begin.</div>
+
+    <div style="position: relative; width: 90%; max-width: 1000px; margin: 0 auto;">
+        <div class="y-axis-title">Number of years</div>
+        <div class="chart-container" id="chart">
+            <div class="y-axis" id="y-axis-labels"></div>
+            </div>
+        <div class="x-axis-title">Return (%)</div>
+    </div>
+
+<script>
+    const returnsData = [
+        {year: 1948, return: 12.25}, {year: 1949, return: 23.85}, {year: 1950, return: 51.69}, {year: 1951, return: 25.44},
+        {year: 1952, return: 0.01}, {year: 1953, return: 2.56}, {year: 1954, return: 39.37}, {year: 1955, return: 27.68},
+        {year: 1956, return: 12.68}, {year: 1957, return: -20.58}, {year: 1958, return: 31.25}, {year: 1959, return: 4.59},
+        {year: 1960, return: 1.78}, {year: 1961, return: 32.75}, {year: 1962, return: -7.09}, {year: 1963, return: 15.60},
+        {year: 1964, return: 25.43}, {year: 1965, return: 6.67}, {year: 1966, return: -7.07}, {year: 1967, return: 18.09},
+        {year: 1968, return: 22.45}, {year: 1969, return: -0.81}, {year: 1970, return: -3.57}, {year: 1971, return: 8.01},
+        {year: 1972, return: 27.37}, {year: 1973, return: 0.27}, {year: 1974, return: -25.93}, {year: 1975, return: 18.48},
+        {year: 1976, return: 11.02}, {year: 1977, return: 10.71}, {year: 1978, return: 29.72}, {year: 1979, return: 44.77},
+        {year: 1980, return: 30.13}, {year: 1981, return: -10.25}, {year: 1982, return: 5.54}, {year: 1983, return: 35.49},
+        {year: 1984, return: -2.39}, {year: 1985, return: 25.07}, {year: 1986, return: 8.95}, {year: 1987, return: 5.88},
+        {year: 1988, return: 11.08}, {year: 1989, return: 21.37}, {year: 1990, return: -14.80}, {year: 1991, return: 12.02},
+        {year: 1992, return: -1.43}, {year: 1993, return: 32.55}, {year: 1994, return: -0.18}, {year: 1995, return: 14.53},
+        {year: 1996, return: 28.35}, {year: 1997, return: 14.98}, {year: 1998, return: -1.58}, {year: 1999, return: 31.59},
+        {year: 2000, return: 7.41}, {year: 2001, return: -12.60}, {year: 2002, return: -12.40}, {year: 2003, return: 26.70},
+        {year: 2004, return: 14.50}, {year: 2005, return: 23.29}, {year: 2006, return: 17.30}, {year: 2007, return: 9.80},
+        {year: 2008, return: -33.00}, {year: 2009, return: 34.35}, {year: 2010, return: 17.27}, {year: 2011, return: -8.57},
+        {year: 2012, return: 5.41}, {year: 2013, return: 9.55}, {year: 2014, return: 7.42}, {year: 2015, return: -8.32},
+        {year: 2016, return: 21.08}, {year: 2017, return: 9.10}, {year: 2018, return: -8.88}, {year: 2019, return: 22.88},
+        {year: 2020, return: 1.78}, {year: 2021, return: 20.64}, {year: 2022, return: -9.44}
+    ];
+
+    const binEdges = [-35, -30, -25, -20, -15, -10, -5, 0, 5, 10, 15, 20, 25, 30, 35, 40, 45, 50, 55, 60];
+
+    function computeMaxBinCount() {
+        const counts = new Array(binEdges.length - 1).fill(0);
+        returnsData.forEach(point => {
+            const idx = getBinIndex(point.return);
+            counts[idx] += 1;
+        });
+        return Math.max(...counts);
+    }
+
+    const maxObservedCount = computeMaxBinCount();
+    const maxCount = maxObservedCount + 1;
+    const chartHeight = 400;
+    const blockHeight = chartHeight / maxCount;
+
+    let currentIndex = 0;
+    let playInterval = null;
+
+    function initChart() {
+        const chart = document.getElementById('chart');
+        const yAxisLabels = document.getElementById('y-axis-labels');
+
+        for (let i = 0; i <= maxCount; i++) {
+            const label = document.createElement('div');
+            label.innerText = i;
+            label.style.height = blockHeight + 'px';
+            label.style.display = 'flex';
+            label.style.alignItems = 'flex-end';
+            yAxisLabels.appendChild(label);
+        }
+
+        for (let i = 0; i < binEdges.length - 1; i++) {
+            const col = document.createElement('div');
+            col.className = 'bin-column';
+            col.id = 'bin-' + i;
+
+            const label = document.createElement('div');
+            label.className = 'x-axis-label';
+            label.innerText = binEdges[i];
+            col.appendChild(label);
+
+            if (i === binEdges.length - 2) {
+                const endLabel = document.createElement('div');
+                endLabel.className = 'x-axis-label';
+                endLabel.innerText = binEdges[i + 1];
+                endLabel.style.left = '100%';
+                col.appendChild(endLabel);
+            }
+
+            chart.appendChild(col);
+        }
+    }
+
+    function getBinIndex(val) {
+        for (let i = 0; i < binEdges.length - 1; i++) {
+            if (val >= binEdges[i] && val < binEdges[i + 1]) return i;
+        }
+        return binEdges.length - 2;
+    }
+
+    function addBlock(dataPoint) {
+        const binIdx = getBinIndex(dataPoint.return);
+        const col = document.getElementById('bin-' + binIdx);
+
+        const block = document.createElement('div');
+        block.className = 'data-block highlight';
+        block.title = `Year: ${dataPoint.year}, Return: ${dataPoint.return}%`;
+
+        col.appendChild(block);
+
+        setTimeout(() => {
+            block.style.height = blockHeight + 'px';
+        }, 10);
+
+        setTimeout(() => {
+            block.classList.remove('highlight');
+        }, 400);
+
+        document.getElementById('status-text').innerHTML = `Processing Year: <strong>${dataPoint.year}</strong> | Return: <strong>${dataPoint.return}%</strong> falls into bin [${binEdges[binIdx]} to ${binEdges[binIdx + 1]})`;
+    }
+
+    function step() {
+        if (currentIndex < returnsData.length) {
+            addBlock(returnsData[currentIndex]);
+            currentIndex++;
+        } else {
+            document.getElementById('status-text').innerText = 'All data processed. Final distribution complete.';
+            clearInterval(playInterval);
+            document.getElementById('btn-step').disabled = true;
+            document.getElementById('btn-play').disabled = true;
+            document.getElementById('btn-final').disabled = true;
+        }
+    }
+
+    function playAll() {
+        document.getElementById('btn-play').disabled = true;
+        document.getElementById('btn-step').disabled = true;
+        playInterval = setInterval(() => {
+            step();
+            if (currentIndex >= returnsData.length) clearInterval(playInterval);
+        }, 150);
+    }
+
+    function showFinal() {
+        clearInterval(playInterval);
+        while (currentIndex < returnsData.length) {
+            const binIdx = getBinIndex(returnsData[currentIndex].return);
+            const col = document.getElementById('bin-' + binIdx);
+            const block = document.createElement('div');
+            block.className = 'data-block';
+            block.style.height = blockHeight + 'px';
+            block.title = `Year: ${returnsData[currentIndex].year}, Return: ${returnsData[currentIndex].return}%`;
+            col.appendChild(block);
+            currentIndex++;
+        }
+        document.getElementById('status-text').innerText = 'All data processed. Final distribution complete.';
+        document.getElementById('btn-step').disabled = true;
+        document.getElementById('btn-play').disabled = true;
+        document.getElementById('btn-final').disabled = true;
+    }
+
+    function reset() {
+        clearInterval(playInterval);
+        currentIndex = 0;
+        document.getElementById('status-text').innerText = "Click 'Step Forward' to begin.";
+        document.getElementById('btn-step').disabled = false;
+        document.getElementById('btn-play').disabled = false;
+        document.getElementById('btn-final').disabled = false;
+
+        for (let i = 0; i < binEdges.length - 1; i++) {
+            const col = document.getElementById('bin-' + i);
+            const blocks = col.querySelectorAll('.data-block');
+            blocks.forEach(b => b.remove());
+        }
+    }
+
+    initChart();
+</script>
+
+</body>
+</html>
