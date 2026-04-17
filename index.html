@@ -4,39 +4,179 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Finance Learning Tools</title>
-    <meta http-equiv="refresh" content="0; url=./efficient_frontier_dashboard.html" />
-    <script>
-      window.location.replace('./efficient_frontier_dashboard.html');
-    </script>
     <style>
+      :root {
+        color-scheme: light;
+        --bg-start: #f4efe6;
+        --bg-end: #d9e8f5;
+        --card-bg: rgba(255, 255, 255, 0.82);
+        --card-border: rgba(50, 76, 101, 0.12);
+        --text: #17324d;
+        --muted: #4f657a;
+        --accent: #0b6e4f;
+        --accent-strong: #084c39;
+        --shadow: 0 24px 70px rgba(23, 50, 77, 0.14);
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
       body {
-        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
         margin: 0;
         min-height: 100vh;
-        display: grid;
-        place-items: center;
-        background: #f6f8fa;
-        color: #24292f;
+        font-family: Georgia, "Times New Roman", serif;
+        background:
+          radial-gradient(circle at top, rgba(255, 255, 255, 0.75), transparent 34%),
+          linear-gradient(135deg, var(--bg-start), var(--bg-end));
+        color: var(--text);
       }
 
       main {
-        max-width: 640px;
-        padding: 24px;
-        text-align: center;
+        width: min(980px, calc(100% - 32px));
+        margin: 0 auto;
+        padding: 64px 0 72px;
       }
 
-      a {
-        color: #0969da;
+      .hero {
+        margin-bottom: 32px;
+        padding: 40px;
+        border: 1px solid var(--card-border);
+        border-radius: 28px;
+        background: var(--card-bg);
+        backdrop-filter: blur(12px);
+        box-shadow: var(--shadow);
+      }
+
+      .eyebrow {
+        margin: 0 0 14px;
+        font-family: "Trebuchet MS", "Segoe UI", sans-serif;
+        font-size: 0.82rem;
+        font-weight: 700;
+        letter-spacing: 0.16em;
+        text-transform: uppercase;
+        color: var(--accent);
+      }
+
+      h1 {
+        margin: 0;
+        font-size: clamp(2.5rem, 5vw, 4.4rem);
+        line-height: 0.96;
+      }
+
+      .hero p {
+        max-width: 680px;
+        margin: 18px 0 0;
+        font-size: 1.08rem;
+        line-height: 1.7;
+        color: var(--muted);
+      }
+
+      .grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+        gap: 22px;
+      }
+
+      .card {
+        display: block;
+        padding: 28px;
+        border: 1px solid var(--card-border);
+        border-radius: 24px;
+        background: var(--card-bg);
+        box-shadow: var(--shadow);
+        color: inherit;
+        text-decoration: none;
+        transition:
+          transform 180ms ease,
+          box-shadow 180ms ease,
+          border-color 180ms ease;
+      }
+
+      .card:hover,
+      .card:focus-visible {
+        transform: translateY(-4px);
+        border-color: rgba(11, 110, 79, 0.35);
+        box-shadow: 0 28px 80px rgba(23, 50, 77, 0.2);
+      }
+
+      .card-label {
+        display: inline-block;
+        margin-bottom: 14px;
+        padding: 6px 10px;
+        border-radius: 999px;
+        background: rgba(11, 110, 79, 0.1);
+        font-family: "Trebuchet MS", "Segoe UI", sans-serif;
+        font-size: 0.8rem;
+        font-weight: 700;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        color: var(--accent);
+      }
+
+      .card h2 {
+        margin: 0 0 10px;
+        font-size: 1.6rem;
+      }
+
+      .card p {
+        margin: 0;
+        line-height: 1.65;
+        color: var(--muted);
+      }
+
+      .card strong {
+        display: inline-block;
+        margin-top: 18px;
+        font-family: "Trebuchet MS", "Segoe UI", sans-serif;
+        font-size: 0.95rem;
+        color: var(--accent-strong);
+      }
+
+      @media (max-width: 640px) {
+        main {
+          padding: 28px 0 40px;
+        }
+
+        .hero,
+        .card {
+          padding: 24px;
+        }
       }
     </style>
   </head>
   <body>
     <main>
-      <h1>Opening the Efficient Frontier Dashboard...</h1>
-      <p>
-        If you are not redirected automatically,
-        <a href="./efficient_frontier_dashboard.html">open the dashboard here</a>.
-      </p>
+      <section class="hero">
+        <p class="eyebrow">Finance Learning Tools</p>
+        <h1>Choose a dashboard to explore</h1>
+        <p>
+          These interactive dashboards are designed for teaching and classroom
+          exploration. Select a tool below to open it in your browser.
+        </p>
+      </section>
+
+      <section class="grid" aria-label="Dashboard list">
+        <a class="card" href="./efficient_frontier_dashboard.html">
+          <span class="card-label">Portfolio Theory</span>
+          <h2>Efficient Frontier Dashboard</h2>
+          <p>
+            Explore portfolio risk and return tradeoffs, visualize the frontier,
+            and experiment with allocation ideas.
+          </p>
+          <strong>Open dashboard</strong>
+        </a>
+
+        <a class="card" href="./financial_leverage_simulator.html">
+          <span class="card-label">Capital Structure</span>
+          <h2>Financial Leverage Simulator</h2>
+          <p>
+            See how leverage changes outcomes and compare scenarios in an
+            interactive teaching-focused simulator.
+          </p>
+          <strong>Open dashboard</strong>
+        </a>
+      </section>
     </main>
   </body>
 </html>
