@@ -1,7 +1,6 @@
 # Finance Learning Tools
 
-A collection of interactive dashboards, simulators, and visual tools for teaching and learning finance concepts. All dashboards share a unified light-theme design system built around DM Sans typography, a navy accent palette, and white card layouts.
-
+A collection of interactive dashboards, simulators, and visual tools for teaching and learning finance concepts.
 **Live site:** https://behnoud-bazrafshan.github.io/finance-learning-tools/
 
 ## Dashboards
