@@ -1,0 +1,466 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Financial Leverage Simulator</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.0.0"></script>
+    <style>
+        body {
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            background-color: #f0f4f8;
+            margin: 0;
+            padding: 20px;
+            color: #333;
+            display: flex;
+            justify-content: center;
+        }
+
+        .app-container {
+            background-color: #ffffff;
+            width: 100%;
+            max-width: 900px;
+            border-radius: 12px;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.05);
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Header & Dashboard */
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 30px;
+            background-color: #f8f9fa;
+            border-bottom: 1px solid #eaeaea;
+        }
+
+        .header h1 {
+            font-size: 1.4rem;
+            margin: 0;
+            color: #2c3e50;
+        }
+
+        .dashboard {
+            display: flex;
+            gap: 20px;
+        }
+
+        .dash-item {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .dash-label {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            font-weight: 600;
+            color: #6c757d;
+            letter-spacing: 0.5px;
+            margin-bottom: 4px;
+        }
+
+        .dash-value {
+            font-size: 1.2rem;
+            font-weight: 700;
+            font-family: monospace;
+        }
+
+        /* Main Content Area */
+        .content {
+            padding: 30px;
+        }
+
+        /* Schematic Diagram */
+        .schematic-container {
+            display: flex;
+            justify-content: center;
+            gap: 40px;
+            margin-bottom: 40px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid #eaeaea;
+            align-items: flex-end;
+            height: 200px;
+        }
+
+        .block-column {
+            display: flex;
+            flex-direction: column;
+            width: 200px;
+            position: relative;
+        }
+
+        .block-column::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: -20px;
+            right: -20px;
+            height: 2px;
+            background-color: #999;
+        }
+
+        .block {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+
+        .block-pill {
+            background: white;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: bold;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+            border: 1px solid #ccc;
+            z-index: 2;
+        }
+
+        /* Case A Block */
+        .block-a-equity {
+            height: 180px;
+            background-color: #0056b3;
+        }
+
+        /* Case B Blocks */
+        .block-b-debt {
+            height: 144px;
+            background-color: #b31b1b;
+            transition: height 0.2s ease;
+        }
+
+        .block-b-equity {
+            height: 36px;
+            background-color: #1b5e20;
+            transition: height 0.2s ease;
+        }
+
+        /* Chart Area */
+        .chart-container {
+            height: 250px;
+            width: 100%;
+            margin-bottom: 20px;
+        }
+
+        /* Controls Footer */
+        .controls {
+            background-color: #f8f9fa;
+            padding: 20px 30px;
+            border-top: 1px solid #eaeaea;
+            display: flex;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 30px;
+        }
+
+        .control-group {
+            flex: 1;
+            min-width: 250px;
+            display: flex;
+            flex-direction: column;
+            align-items: stretch;
+            gap: 10px;
+        }
+
+        .control-row {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+        }
+
+        .control-group label {
+            font-size: 0.95rem;
+            color: #333;
+            white-space: normal;
+            font-weight: 600;
+        }
+
+        input[type="range"] {
+            flex-grow: 1;
+            min-width: 0;
+            cursor: pointer;
+        }
+
+        input[type="number"] {
+            width: 120px;
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            text-align: center;
+            font-weight: bold;
+            font-size: 1rem;
+            background: #fff;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="app-container">
+        <div class="header">
+            <h1>Financial Leverage Simulator</h1>
+            <div class="dashboard">
+                <div class="dash-item">
+                    <span class="dash-label">Case A: Net Profit</span>
+                    <span class="dash-value" id="val-net-a">$50,000</span>
+                </div>
+                <div class="dash-item">
+                    <span class="dash-label">Case A: ROE</span>
+                    <span class="dash-value" id="val-roe-a">10.0%</span>
+                </div>
+                <div class="dash-item">
+                    <span class="dash-label">Case B: Net Profit</span>
+                    <span class="dash-value" id="val-net-b">$30,000</span>
+                </div>
+                <div class="dash-item">
+                    <span class="dash-label">Case B: ROE</span>
+                    <span class="dash-value" id="val-roe-b">30.0%</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="content">
+            <div class="schematic-container">
+                <div class="block-column">
+                    <div class="block block-a-equity">
+                        <div class="block-pill" id="pill-a-equity">EQUITY $500K</div>
+                    </div>
+                </div>
+                <div class="block-column">
+                    <div class="block block-b-debt" id="block-b-debt">
+                        <div class="block-pill" id="pill-b-debt">DEBT $400K</div>
+                    </div>
+                    <div class="block block-b-equity" id="block-b-equity">
+                        <div class="block-pill" id="pill-b-equity">EQUITY $100K</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="chart-container">
+                <canvas id="roeChart"></canvas>
+            </div>
+        </div>
+
+        <div class="controls">
+            <div class="control-group">
+                <label>Market Return (%)</label>
+                <div class="control-row">
+                    <input type="range" id="slider-mkt" min="-30" max="30" step="1" value="10">
+                    <input type="number" id="input-mkt" value="0.10" step="0.01">
+                </div>
+            </div>
+            <div class="control-group">
+                <label>Interest Rate (%)</label>
+                <div class="control-row">
+                    <input type="range" id="slider-int" min="1" max="12" step="0.5" value="5">
+                    <input type="number" id="input-int" value="0.05" step="0.005">
+                </div>
+            </div>
+            <div class="control-group">
+                <label>Debt Amount ($)</label>
+                <div class="control-row">
+                    <input type="range" id="slider-debt" min="0" max="400" step="10" value="400">
+                    <input type="number" id="input-debt" value="400000" step="10000">
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Register Chart.js plugin
+        Chart.register(ChartDataLabels);
+
+        // Constants
+        const ASSET_VALUE = 500000;
+        const EQUITY_A = 500000;
+        const DEBT_STEP = 10000;
+        const MAX_DEBT = 400000;
+        const MARKET_RETURN_MIN = -0.30;
+        const MARKET_RETURN_MAX = 0.30;
+        const INTEREST_RATE_MIN = 0.01;
+        const INTEREST_RATE_MAX = 0.12;
+
+        // Formatters
+        const formatCurrency = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', maximumFractionDigits: 0 });
+
+        // DOM Elements
+        const sliderMkt = document.getElementById('slider-mkt');
+        const inputMkt = document.getElementById('input-mkt');
+        const sliderInt = document.getElementById('slider-int');
+        const inputInt = document.getElementById('input-int');
+        const sliderDebt = document.getElementById('slider-debt');
+        const inputDebt = document.getElementById('input-debt');
+
+        const valNetA = document.getElementById('val-net-a');
+        const valRoeA = document.getElementById('val-roe-a');
+        const valNetB = document.getElementById('val-net-b');
+        const valRoeB = document.getElementById('val-roe-b');
+        const blockBDebt = document.getElementById('block-b-debt');
+        const blockBEquity = document.getElementById('block-b-equity');
+        const pillAEquity = document.getElementById('pill-a-equity');
+        const pillBDebt = document.getElementById('pill-b-debt');
+        const pillBEquity = document.getElementById('pill-b-equity');
+
+        function computeRoeBPercent(mktReturn, intRate, debtB) {
+            const equityB = ASSET_VALUE - debtB;
+            if (equityB <= 0) return 0;
+            const grossProfit = ASSET_VALUE * mktReturn;
+            const interestB = debtB * intRate;
+            const netB = grossProfit - interestB;
+            return (netB / equityB) * 100;
+        }
+
+        const AXIS_LIMIT = 200;
+
+        // Chart Setup
+        const ctx = document.getElementById('roeChart').getContext('2d');
+        const roeChart = new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: ['Case A (No Debt)', 'Case B (Leveraged)'],
+                datasets: [{
+                    data: [10, 30],
+                    backgroundColor: ['#0056b3', '#b31b1b'],
+                    barThickness: 40
+                }]
+            },
+            options: {
+                indexAxis: 'y', // Makes it horizontal
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { display: false },
+                    tooltip: {
+                        callbacks: {
+                            label: (context) => context.raw.toFixed(1) + '%'
+                        }
+                    },
+                    datalabels: {
+                        anchor: (context) => context.dataset.data[context.dataIndex] >= 0 ? 'end' : 'start',
+                        align: (context) => context.dataset.data[context.dataIndex] >= 0 ? 'right' : 'left',
+                        formatter: Math.round,
+                        font: { weight: 'bold', size: 12 },
+                        color: '#333',
+                        formatter: function (value) {
+                            return value.toFixed(1) + '%';
+                        }
+                    }
+                },
+                scales: {
+                    x: {
+                        min: -AXIS_LIMIT,
+                        max: AXIS_LIMIT,
+                        grid: {
+                            color: (context) => context.tick.value === 0 ? '#333' : '#eaeaea',
+                            lineWidth: (context) => context.tick.value === 0 ? 2 : 1
+                        },
+                        title: {
+                            display: true,
+                            text: 'Return on Equity (ROE) % →',
+                            align: 'end'
+                        }
+                    },
+                    y: {
+                        grid: { display: false },
+                        ticks: { font: { size: 12 } }
+                    }
+                }
+            }
+        });
+
+        // Core Calculation Logic
+        function updateSimulation(source) {
+            // Handle input syncing
+            let mktReturn, intRate, debtB;
+
+            if (source === 'slider-mkt') {
+                inputMkt.value = (parseFloat(sliderMkt.value) / 100).toFixed(2);
+            } else if (source === 'input-mkt') {
+                sliderMkt.value = parseFloat(inputMkt.value) * 100;
+            }
+
+            if (source === 'slider-int') {
+                inputInt.value = (parseFloat(sliderInt.value) / 100).toFixed(3);
+            } else if (source === 'input-int') {
+                sliderInt.value = parseFloat(inputInt.value) * 100;
+            }
+
+            if (source === 'slider-debt') {
+                inputDebt.value = String(parseFloat(sliderDebt.value) * 1000);
+            } else if (source === 'input-debt') {
+                const clampedDebt = Math.max(0, Math.min(MAX_DEBT, parseFloat(inputDebt.value) || 0));
+                inputDebt.value = String(clampedDebt);
+                sliderDebt.value = clampedDebt / 1000;
+            }
+
+            mktReturn = parseFloat(sliderMkt.value) / 100;
+            intRate = parseFloat(sliderInt.value) / 100;
+            debtB = Math.min(parseFloat(sliderDebt.value) * 1000, MAX_DEBT);
+            sliderDebt.value = debtB / 1000;
+            inputDebt.value = String(debtB);
+            const equityB = ASSET_VALUE - debtB;
+
+            // Math
+            const grossProfit = ASSET_VALUE * mktReturn;
+
+            // Case A
+            const netA = grossProfit;
+            const roeA = (netA / EQUITY_A) * 100;
+
+            // Case B
+            const interestB = debtB * intRate;
+            const netB = grossProfit - interestB;
+            const roeB = equityB > 0 ? (netB / equityB) * 100 : 0;
+
+            // Update Dashboard
+            valNetA.innerText = formatCurrency.format(netA);
+            valRoeA.innerText = roeA.toFixed(1) + '%';
+            valNetA.style.color = netA < 0 ? '#b31b1b' : '#333';
+
+            valNetB.innerText = formatCurrency.format(netB);
+            valRoeB.innerText = roeB.toFixed(1) + '%';
+            valNetB.style.color = netB < 0 ? '#b31b1b' : '#333';
+
+            // Update schematic
+            const totalHeight = 180;
+            const debtHeight = (debtB / ASSET_VALUE) * totalHeight;
+            const equityHeight = (equityB / ASSET_VALUE) * totalHeight;
+            blockBDebt.style.height = debtHeight + 'px';
+            blockBEquity.style.height = equityHeight + 'px';
+            pillAEquity.innerText = `EQUITY ${formatCurrency.format(EQUITY_A)}`;
+            pillBDebt.innerText = `DEBT ${formatCurrency.format(debtB)}`;
+            pillBEquity.innerText = `EQUITY ${formatCurrency.format(equityB)}`;
+
+            // Update Chart
+            roeChart.data.datasets[0].data = [roeA, roeB];
+
+            // Dynamic colors based on negative/positive
+            roeChart.data.datasets[0].backgroundColor = [
+                roeA < 0 ? '#8aa5c5' : '#0056b3', // Dim blue if negative
+                roeB < 0 ? '#c76e6e' : '#b31b1b'  // Dim red if negative
+            ];
+
+            roeChart.update();
+        }
+
+        // Event Listeners
+        sliderMkt.addEventListener('input', () => updateSimulation('slider-mkt'));
+        inputMkt.addEventListener('change', () => updateSimulation('input-mkt'));
+        sliderInt.addEventListener('input', () => updateSimulation('slider-int'));
+        inputInt.addEventListener('change', () => updateSimulation('input-int'));
+        sliderDebt.addEventListener('input', () => updateSimulation('slider-debt'));
+        inputDebt.addEventListener('change', () => updateSimulation('input-debt'));
+
+        // Initial render
+        updateSimulation('init');
+    </script>
+
+</body>
+
+</html>
