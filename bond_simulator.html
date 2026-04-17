@@ -59,6 +59,24 @@
       min-height: 640px;
     }
 
+    .back-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 14px;
+      color: var(--accent);
+      text-decoration: none;
+      font-size: 0.9rem;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+    }
+
+    .back-link:hover,
+    .back-link:focus-visible {
+      text-decoration: underline;
+    }
+
     .sidebar h1 {
       margin: 0 0 8px;
       font-family: Georgia, "Times New Roman", serif;
@@ -235,6 +253,7 @@
 <body>
   <div class="page">
     <aside class="sidebar panel">
+      <a class="back-link" href="./index.html">&larr; Back to main menu</a>
       <h1>Bond Price-Yield &amp; Interest Rate Risk Simulator</h1>
       <p>Change the market rate and watch how discounting pulls a bond's price lower, especially for cash flows that arrive far in the future.</p>
 
