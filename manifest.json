@@ -1,0 +1,17 @@
+{
+  "name": "Finance Learning Tools",
+  "short_name": "Finance Tools",
+  "start_url": "/finance-learning-tools/",
+  "scope": "/finance-learning-tools/",
+  "display": "standalone",
+  "background_color": "#f4efe6",
+  "theme_color": "#17324d",
+  "icons": [
+    {
+      "src": "./favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    }
+  ]
+}
