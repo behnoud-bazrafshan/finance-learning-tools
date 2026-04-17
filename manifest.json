@@ -4,8 +4,8 @@
   "start_url": "/finance-learning-tools/",
   "scope": "/finance-learning-tools/",
   "display": "standalone",
-  "background_color": "#f4efe6",
-  "theme_color": "#17324d",
+  "background_color": "#f8fafc",
+  "theme_color": "#1e3a5f",
   "icons": [
     {
       "src": "./favicon.svg",

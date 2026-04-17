@@ -3,90 +3,63 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="theme-color" content="#17324d" />
+    <meta name="theme-color" content="#1e3a5f" />
     <link rel="icon" type="image/svg+xml" href="./favicon.svg" />
     <link rel="manifest" href="./manifest.json" />
+    <link rel="stylesheet" href="./styles.css" />
     <title>Finance Learning Tools</title>
     <style>
-      :root {
-        color-scheme: light;
-        --bg-start: #f4efe6;
-        --bg-end: #d9e8f5;
-        --card-bg: rgba(255, 255, 255, 0.82);
-        --card-border: rgba(50, 76, 101, 0.12);
-        --text: #17324d;
-        --muted: #4f657a;
-        --accent: #0b6e4f;
-        --accent-strong: #084c39;
-        --shadow: 0 24px 70px rgba(23, 50, 77, 0.14);
-      }
-
-      * {
-        box-sizing: border-box;
-      }
-
-      body {
-        margin: 0;
-        min-height: 100vh;
-        font-family: Georgia, "Times New Roman", serif;
-        background:
-          radial-gradient(circle at top, rgba(255, 255, 255, 0.75), transparent 34%),
-          linear-gradient(135deg, var(--bg-start), var(--bg-end));
-        color: var(--text);
-      }
-
       main {
         width: min(980px, calc(100% - 32px));
         margin: 0 auto;
-        padding: 64px 0 72px;
+        padding: 56px 0 64px;
       }
 
       .hero {
-        margin-bottom: 32px;
-        padding: 40px;
-        border: 1px solid var(--card-border);
-        border-radius: 28px;
-        background: var(--card-bg);
-        backdrop-filter: blur(12px);
+        margin-bottom: 28px;
+        padding: 36px 40px;
+        border: 1px solid var(--border);
+        border-radius: var(--radius);
+        background: var(--card);
         box-shadow: var(--shadow);
       }
 
       .eyebrow {
-        margin: 0 0 14px;
-        font-family: "Trebuchet MS", "Segoe UI", sans-serif;
-        font-size: 0.82rem;
+        margin: 0 0 12px;
+        font-size: 0.78rem;
         font-weight: 700;
-        letter-spacing: 0.16em;
+        letter-spacing: 0.14em;
         text-transform: uppercase;
         color: var(--accent);
       }
 
       h1 {
-        margin: 0;
-        font-size: clamp(2.5rem, 5vw, 4.4rem);
-        line-height: 0.96;
+        font-size: clamp(2rem, 4.5vw, 3.2rem);
+        font-weight: 700;
+        line-height: 1.05;
+        letter-spacing: -0.02em;
+        color: var(--text);
       }
 
       .hero p {
-        max-width: 680px;
-        margin: 18px 0 0;
-        font-size: 1.08rem;
-        line-height: 1.7;
-        color: var(--muted);
+        margin: 14px 0 0;
+        font-size: 1rem;
+        line-height: 1.65;
+        color: var(--text-muted);
       }
 
       .grid {
         display: grid;
         grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-        gap: 22px;
+        gap: 18px;
       }
 
       .card {
         display: block;
-        padding: 28px;
-        border: 1px solid var(--card-border);
-        border-radius: 24px;
-        background: var(--card-bg);
+        padding: 26px;
+        border: 1px solid var(--border);
+        border-radius: var(--radius);
+        background: var(--card);
         box-shadow: var(--shadow);
         color: inherit;
         text-decoration: none;
@@ -98,19 +71,18 @@
 
       .card:hover,
       .card:focus-visible {
-        transform: translateY(-4px);
-        border-color: rgba(11, 110, 79, 0.35);
-        box-shadow: 0 28px 80px rgba(23, 50, 77, 0.2);
+        transform: translateY(-3px);
+        border-color: rgba(30, 58, 95, 0.25);
+        box-shadow: var(--shadow-lg);
       }
 
       .card-label {
         display: inline-block;
-        margin-bottom: 14px;
-        padding: 6px 10px;
+        margin-bottom: 12px;
+        padding: 5px 10px;
         border-radius: 999px;
-        background: rgba(11, 110, 79, 0.1);
-        font-family: "Trebuchet MS", "Segoe UI", sans-serif;
-        font-size: 0.8rem;
+        background: var(--accent-light);
+        font-size: 0.72rem;
         font-weight: 700;
         letter-spacing: 0.08em;
         text-transform: uppercase;
@@ -118,32 +90,34 @@
       }
 
       .card h2 {
-        margin: 0 0 10px;
-        font-size: 1.6rem;
+        margin: 0 0 8px;
+        font-size: 1.35rem;
+        font-weight: 700;
+        color: var(--text);
       }
 
       .card p {
         margin: 0;
-        line-height: 1.65;
-        color: var(--muted);
+        font-size: 0.92rem;
+        line-height: 1.6;
+        color: var(--text-muted);
       }
 
-      .card strong {
+      .card .open-link {
         display: inline-block;
-        margin-top: 18px;
-        font-family: "Trebuchet MS", "Segoe UI", sans-serif;
-        font-size: 0.95rem;
-        color: var(--accent-strong);
+        margin-top: 16px;
+        font-size: 0.88rem;
+        font-weight: 600;
+        color: var(--accent);
       }
 
       @media (max-width: 640px) {
         main {
           padding: 28px 0 40px;
         }
-
         .hero,
         .card {
-          padding: 24px;
+          padding: 22px;
         }
       }
     </style>
@@ -151,13 +125,11 @@
   <body>
     <main>
       <section class="hero">
-        <p class="eyebrow">Finance Learning Tools</p>
-        <h1>Choose a dashboard or simulator</h1>
+        <h1>Finance Learning Tools</h1>
         <p>
-          These interactive dashboards are designed for teaching and classroom
-          exploration. Select a tool below to open it in your browser and move
-          between portfolio theory, expected return, leverage, bonds, and
-          return distributions.
+          Interactive dashboards for teaching and classroom exploration.
+          Select a tool below to explore portfolio theory, expected return,
+          leverage, bonds, and return distributions.
         </p>
       </section>
 
@@ -169,7 +141,7 @@
             Explore how changes in market interest rates affect a bond's price
             and present value over time.
           </p>
-          <strong>Open dashboard</strong>
+          <span class="open-link">Open dashboard &rarr;</span>
         </a>
 
         <a class="card" href="./efficient_frontier_dashboard.html">
@@ -179,7 +151,7 @@
             Explore portfolio risk and return tradeoffs, visualize the frontier,
             and experiment with allocation ideas.
           </p>
-          <strong>Open dashboard</strong>
+          <span class="open-link">Open dashboard &rarr;</span>
         </a>
 
         <a class="card" href="./financial_leverage_simulator.html">
@@ -189,17 +161,17 @@
             See how leverage changes outcomes and compare scenarios in an
             interactive teaching-focused simulator.
           </p>
-          <strong>Open dashboard</strong>
+          <span class="open-link">Open dashboard &rarr;</span>
         </a>
 
         <a class="card" href="./expected_return_dashboard.html">
           <span class="card-label">Expected Return</span>
           <h2>Expected Return Simulator</h2>
           <p>
-            Simulate repeated state outcomes to show how expected return emerges
-            as a long-run average rather than a single-period guarantee.
+            Simulate repeated state outcomes to show how expected return
+            emerges as a long-run average rather than a single-period guarantee.
           </p>
-          <strong>Open dashboard</strong>
+          <span class="open-link">Open dashboard &rarr;</span>
         </a>
 
         <a class="card" href="./histogram_dashboard.html">
@@ -209,7 +181,7 @@
             Build a frequency distribution of historical stock returns step by
             step and watch each observation fall into its return bin.
           </p>
-          <strong>Open dashboard</strong>
+          <span class="open-link">Open dashboard &rarr;</span>
         </a>
       </section>
     </main>

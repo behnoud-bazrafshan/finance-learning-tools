@@ -4,91 +4,34 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Bond Price-Yield &amp; Interest Rate Risk Simulator</title>
+  <link rel="stylesheet" href="./styles.css" />
   <style>
     :root {
-      --bg: #f6efe2;
-      --panel: rgba(255, 252, 246, 0.88);
-      --panel-strong: #fffaf2;
-      --text: #21303a;
-      --muted: #62727e;
-      --line: #d8ccbb;
-      --accent: #0d6b74;
-      --accent-soft: #79b5bb;
-      --danger: #c94f46;
-      --cash: #d9d6cf;
-      --pv: #2d8a57;
-      --shadow: 0 18px 48px rgba(49, 57, 68, 0.14);
-    }
-
-    * {
-      box-sizing: border-box;
-    }
-
-    body {
-      margin: 0;
-      min-height: 100vh;
-      font-family: "Avenir Next", "Trebuchet MS", "Segoe UI", sans-serif;
-      color: var(--text);
-      background:
-        radial-gradient(circle at top left, rgba(13, 107, 116, 0.18), transparent 24%),
-        radial-gradient(circle at bottom right, rgba(201, 79, 70, 0.14), transparent 28%),
-        linear-gradient(180deg, #fbf5ea 0%, #f1e6d3 100%);
+      --cash: #c8cfd8;
+      --pv: #16a34a;
     }
 
     .page {
       display: grid;
       grid-template-columns: 320px minmax(0, 1fr);
-      gap: 24px;
+      gap: 20px;
       padding: 20px;
       align-items: start;
     }
 
-    .panel {
-      background: var(--panel);
-      backdrop-filter: blur(12px);
-      border: 1px solid rgba(255, 255, 255, 0.5);
-      border-radius: 24px;
-      box-shadow: var(--shadow);
-    }
-
     .sidebar {
-      padding: 18px 18px 28px;
+      padding: 20px;
       position: sticky;
       top: 20px;
       align-self: stretch;
-      min-height: 640px;
     }
 
-    .back-link {
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      margin-bottom: 14px;
-      color: var(--accent);
-      text-decoration: none;
+    .sidebar .page-header { margin-bottom: 14px; }
+    .sidebar .page-header h1 { font-size: 1.35rem; }
+
+    .sidebar .subtitle {
+      margin: 0 0 16px;
       font-size: 0.9rem;
-      font-weight: 700;
-      letter-spacing: 0.04em;
-      text-transform: uppercase;
-    }
-
-    .back-link:hover,
-    .back-link:focus-visible {
-      text-decoration: underline;
-    }
-
-    .sidebar h1 {
-      margin: 0 0 8px;
-      font-family: Georgia, "Times New Roman", serif;
-      font-size: 1.75rem;
-      line-height: 1.02;
-    }
-
-    .sidebar p {
-      margin: 0 0 14px;
-      color: var(--muted);
-      line-height: 1.42;
-      font-size: 0.95rem;
     }
 
     .controls {
@@ -101,32 +44,24 @@
       gap: 6px;
     }
 
-    label {
-      font-size: 0.94rem;
-      font-weight: 700;
-      letter-spacing: 0.01em;
+    .control label {
+      font-size: 0.88rem;
+      font-weight: 600;
     }
 
-    input,
-    select {
+    .control input[type="number"],
+    .control select {
       width: 100%;
-      padding: 9px 12px;
-      border-radius: 12px;
-      border: 1px solid var(--line);
-      background: rgba(255, 255, 255, 0.9);
-      color: var(--text);
-      font: inherit;
     }
 
-    input[type="range"] {
-      padding: 0;
-      accent-color: var(--accent);
+    .control input[type="range"] {
+      width: 100%;
     }
 
     .divider {
       height: 1px;
       margin: 6px 0 2px;
-      background: linear-gradient(90deg, transparent, var(--line), transparent);
+      background: var(--border);
     }
 
     .slider-row {
@@ -134,8 +69,13 @@
       justify-content: space-between;
       gap: 12px;
       align-items: center;
-      color: var(--muted);
-      font-size: 0.92rem;
+      color: var(--text-muted);
+      font-size: 0.88rem;
+    }
+
+    .slider-row strong {
+      font-family: 'JetBrains Mono', monospace;
+      color: var(--text);
     }
 
     .content {
@@ -146,32 +86,33 @@
     .metrics {
       display: grid;
       grid-template-columns: repeat(3, minmax(0, 1fr));
-      gap: 14px;
+      gap: 12px;
     }
 
     .metric {
       padding: 16px 18px;
-      min-height: 96px;
+      min-height: 92px;
     }
 
     .metric-label {
-      font-size: 0.84rem;
+      font-size: 0.72rem;
       text-transform: uppercase;
-      letter-spacing: 0.12em;
-      color: var(--muted);
+      letter-spacing: 0.08em;
+      color: var(--text-muted);
       font-weight: 700;
     }
 
     .metric-value {
-      margin-top: 8px;
-      font-size: clamp(1.4rem, 2vw, 2rem);
-      font-weight: 800;
+      margin-top: 6px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: clamp(1.3rem, 2vw, 1.8rem);
+      font-weight: 700;
     }
 
     .metric-note {
-      margin-top: 6px;
-      color: var(--muted);
-      font-size: 0.92rem;
+      margin-top: 4px;
+      color: var(--text-muted);
+      font-size: 0.85rem;
     }
 
     .chart-grid {
@@ -181,29 +122,29 @@
     }
 
     .card {
-      padding: 16px 16px 12px;
+      padding: 20px;
     }
 
     .card h3 {
       margin: 0;
-      font-size: 1.15rem;
+      font-size: 1.05rem;
+      font-weight: 700;
     }
 
     .card p {
-      margin: 6px 0 12px;
-      color: var(--muted);
-      line-height: 1.5;
+      margin: 6px 0 14px;
+      color: var(--text-muted);
+      font-size: 0.88rem;
+      line-height: 1.55;
     }
 
     .chart {
       width: 100%;
       height: auto;
       display: block;
-      border-radius: 18px;
-      background:
-        linear-gradient(180deg, rgba(255, 255, 255, 0.75), rgba(255, 255, 255, 0.88)),
-        linear-gradient(135deg, rgba(121, 181, 187, 0.12), rgba(201, 79, 70, 0.08));
-      border: 1px solid rgba(216, 204, 187, 0.8);
+      border-radius: var(--radius-sm);
+      background: var(--bg);
+      border: 1px solid var(--border);
     }
 
     .legend {
@@ -211,8 +152,8 @@
       gap: 18px;
       flex-wrap: wrap;
       margin-top: 10px;
-      color: var(--muted);
-      font-size: 0.9rem;
+      color: var(--text-muted);
+      font-size: 0.85rem;
     }
 
     .legend-item {
@@ -229,9 +170,9 @@
 
     .footer-note {
       padding: 0 4px;
-      color: var(--muted);
+      color: var(--text-muted);
       line-height: 1.6;
-      font-size: 0.95rem;
+      font-size: 0.9rem;
     }
 
     @media (max-width: 1080px) {
@@ -253,9 +194,14 @@
 <body>
   <div class="page">
     <aside class="sidebar panel">
-      <a class="back-link" href="./index.html">&larr; Back to main menu</a>
-      <h1>Bond Price-Yield &amp; Interest Rate Risk Simulator</h1>
-      <p>Change the market rate and watch how discounting pulls a bond's price lower, especially for cash flows that arrive far in the future.</p>
+      <a class="back-link" href="./index.html">
+        <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M10 3L5 8l5 5"/></svg>
+        Finance Learning Tools
+      </a>
+      <div class="page-header">
+        <h1>Bond Price-Yield &amp; Interest Rate Risk</h1>
+      </div>
+      <p class="subtitle" style="color:var(--text-muted);font-size:0.9rem;margin-bottom:16px;">Change the market rate and watch how discounting pulls a bond's price lower, especially for cash flows that arrive far in the future.</p>
 
       <div class="controls">
         <div class="control">
@@ -497,14 +443,14 @@
           y1: margin.top,
           x2: x,
           y2: height - margin.bottom,
-          stroke: "#e9dfd1",
+          stroke: "#e2e8f0",
           "stroke-width": 1
         }));
         const label = svgEl("text", {
           x,
           y: height - margin.bottom + 24,
           "text-anchor": "middle",
-          fill: "#62727e",
+          fill: "#64748b",
           "font-size": 12
         });
         label.textContent = tick.label;
@@ -518,14 +464,14 @@
           y1: y,
           x2: width - margin.right,
           y2: y,
-          stroke: "#e9dfd1",
+          stroke: "#e2e8f0",
           "stroke-width": 1
         }));
         const label = svgEl("text", {
           x: margin.left - 10,
           y: y + 4,
           "text-anchor": "end",
-          fill: "#62727e",
+          fill: "#64748b",
           "font-size": 12
         });
         label.textContent = tick.label;
@@ -537,7 +483,7 @@
         y1: height - margin.bottom,
         x2: width - margin.right,
         y2: height - margin.bottom,
-        stroke: "#b39d85",
+        stroke: "#94a3b8",
         "stroke-width": 1.4
       }));
 
@@ -546,7 +492,7 @@
         y1: margin.top,
         x2: margin.left,
         y2: height - margin.bottom,
-        stroke: "#b39d85",
+        stroke: "#94a3b8",
         "stroke-width": 1.4
       }));
 
@@ -554,7 +500,7 @@
         x: margin.left + chartWidth / 2,
         y: height - 14,
         "text-anchor": "middle",
-        fill: "#374853",
+        fill: "#1e293b",
         "font-size": 13,
         "font-weight": 700
       });
@@ -566,7 +512,7 @@
         y: margin.top + chartHeight / 2,
         transform: `rotate(-90 18 ${margin.top + chartHeight / 2})`,
         "text-anchor": "middle",
-        fill: "#374853",
+        fill: "#1e293b",
         "font-size": 13,
         "font-weight": 700
       });
@@ -621,7 +567,7 @@
       svg.appendChild(svgEl("path", {
         d: pathData,
         fill: "none",
-        stroke: "#0d6b74",
+        stroke: "#1e3a5f",
         "stroke-width": 4,
         "stroke-linecap": "round",
         "stroke-linejoin": "round"
@@ -633,7 +579,7 @@
         y1: parY,
         x2: width - margin.right,
         y2: parY,
-        stroke: "#b78b53",
+        stroke: "#94a3b8",
         "stroke-width": 2,
         "stroke-dasharray": "7 7"
       }));
@@ -642,7 +588,7 @@
         x: width - margin.right - 4,
         y: parY - 8,
         "text-anchor": "end",
-        fill: "#8a6841",
+        fill: "#64748b",
         "font-size": 12,
         "font-weight": 700
       });
@@ -656,15 +602,15 @@
         cx,
         cy,
         r: 10,
-        fill: "#c94f46",
-        stroke: "#fff7ef",
+        fill: "#dc2626",
+        stroke: "#ffffff",
         "stroke-width": 4
       }));
 
       const guide = svgEl("text", {
         x: Math.min(cx + 12, width - margin.right - 5),
         y: Math.max(cy - 12, margin.top + 16),
-        fill: "#21303a",
+        fill: "#1e293b",
         "font-size": 12.5,
         "font-weight": 700
       });
@@ -725,7 +671,7 @@
           width: barWidth,
           height: baseY - nominalY,
           rx: 4,
-          fill: "#d9d6cf"
+          fill: "#c8cfd8"
         }));
 
         svg.appendChild(svgEl("rect", {
@@ -734,7 +680,7 @@
           width: barWidth,
           height: baseY - pvY,
           rx: 4,
-          fill: "#2d8a57"
+          fill: "#16a34a"
         }));
       });
     }

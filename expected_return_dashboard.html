@@ -4,174 +4,106 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Expected Return Simulator</title>
+  <link rel="stylesheet" href="./styles.css" />
   <style>
     :root {
-      --bg: #f6f8fb;
-      --card: #ffffff;
-      --ink: #1f2937;
-      --muted: #6b7280;
-      --border: #d1d5db;
-      --accent: #0f766e;
-      --accent-soft: #99f6e4;
-      --good: #15803d;
-      --bad: #b91c1c;
-      --soft: #ecfeff;
+      --good: #16a34a;
+      --bad: #dc2626;
+      --soft: rgba(30, 58, 95, 0.04);
     }
 
-    * { box-sizing: border-box; }
-
-    body {
-      margin: 0;
-      font-family: Arial, Helvetica, sans-serif;
-      background: var(--bg);
-      color: var(--ink);
-      line-height: 1.4;
-    }
-
-    .wrap {
-      max-width: 1220px;
-      margin: 24px auto;
-      padding: 0 16px 32px;
-    }
-
-    h1 {
-      margin: 0 0 10px;
-      font-size: 32px;
-    }
-
-    .subtitle {
-      color: var(--muted);
-      margin-bottom: 18px;
-      max-width: 920px;
-      font-size: 17px;
-    }
-
-    .grid {
+    .page {
       display: grid;
-      grid-template-columns: 1.05fr 1.95fr;
-      gap: 16px;
-      align-items: stretch;
+      grid-template-columns: 340px minmax(0, 1fr);
+      gap: 20px;
+      padding: 20px;
+      align-items: start;
     }
 
-    @media (max-width: 980px) {
-      .grid { grid-template-columns: 1fr; }
+    .sidebar {
+      padding: 20px;
+      position: sticky;
+      top: 20px;
     }
 
-    .card {
-      background: var(--card);
-      border: 1px solid var(--border);
-      border-radius: 16px;
-      padding: 16px;
-      box-shadow: 0 6px 18px rgba(0,0,0,0.05);
-      height: 100%;
+    .sidebar .page-header { margin-bottom: 10px; }
+    .sidebar .page-header h1 { font-size: 1.35rem; }
+
+    .sidebar .subtitle {
+      margin: 0 0 16px;
+      font-size: 0.9rem;
+      color: var(--text-muted);
+      line-height: 1.5;
     }
 
-    .chart-card {
-      display: flex;
-      flex-direction: column;
-      min-height: 720px;
-    }
-
-    @media (max-width: 980px) {
-      .chart-card { min-height: 620px; }
-    }
-
-    .card h2 {
-      font-size: 20px;
-      margin: 0 0 12px;
-    }
-
-    .small {
-      color: var(--muted);
-      font-size: 14px;
+    .sidebar h2 {
+      font-size: 1.05rem;
+      font-weight: 700;
+      margin: 0 0 8px;
     }
 
     table {
       width: 100%;
       border-collapse: collapse;
-      font-size: 15px;
-      margin-top: 8px;
+      font-size: 0.88rem;
     }
 
     th, td {
       padding: 10px 8px;
-      border-bottom: 1px solid #e5e7eb;
+      border-bottom: 1px solid var(--border);
       text-align: center;
     }
 
     th:first-child, td:first-child { text-align: left; }
 
     thead th {
-      background: #f8fafc;
+      background: var(--bg);
       font-weight: 700;
     }
 
     .formula {
       background: var(--soft);
-      border: 1px solid #a5f3fc;
-      border-radius: 12px;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
       padding: 12px;
-      margin-top: 10px;
-      font-size: 14px;
+      margin: 10px 0 16px;
+      font-size: 0.88rem;
     }
 
     .controls {
       display: flex;
       flex-wrap: wrap;
       gap: 8px;
-      margin: 10px 0 12px;
+      margin-bottom: 16px;
     }
 
-    button {
-      border: 1px solid var(--border);
-      background: white;
-      color: var(--ink);
-      padding: 10px 12px;
-      border-radius: 10px;
-      cursor: pointer;
-      font-size: 14px;
-      font-weight: 600;
-    }
-
-    button:hover { background: #f8fafc; }
-
-    button.primary {
-      background: var(--accent);
-      color: white;
-      border-color: var(--accent);
-    }
-
-    button.secondary {
-      background: #1d4ed8;
-      color: white;
-      border-color: #1d4ed8;
-    }
-
-    .panel-grid {
+    .info-grid {
       display: grid;
       grid-template-columns: 1fr 1fr;
-      gap: 12px;
-      margin-top: 12px;
-    }
-
-    @media (max-width: 760px) {
-      .panel-grid { grid-template-columns: 1fr; }
+      gap: 10px;
+      margin-bottom: 14px;
     }
 
     .mini-card {
       border: 1px solid var(--border);
-      border-radius: 14px;
-      padding: 12px;
-      background: #fcfdff;
+      border-radius: var(--radius-sm);
+      padding: 10px;
+      background: var(--bg);
+    }
+
+    .mini-card .label {
+      color: var(--text-muted);
+      font-size: 0.78rem;
+      margin-bottom: 4px;
     }
 
     .pill {
       display: inline-block;
-      padding: 6px 10px;
+      padding: 4px 8px;
       border-radius: 999px;
       font-weight: 700;
-      font-size: 14px;
-      margin-right: 8px;
+      font-size: 0.78rem;
+      margin-right: 4px;
     }
 
     .boom { background: #dcfce7; color: #166534; }
@@ -181,49 +113,70 @@
       display: grid;
       grid-template-columns: repeat(3, 1fr);
       gap: 10px;
-      margin-top: 10px;
-    }
-
-    @media (max-width: 760px) {
-      .kpi-grid { grid-template-columns: 1fr; }
     }
 
     .kpi {
       border: 1px solid var(--border);
-      border-radius: 14px;
-      padding: 12px;
-      background: #fcfdff;
+      border-radius: var(--radius-sm);
+      padding: 10px;
+      background: var(--bg);
     }
 
-    .label {
-      color: var(--muted);
-      font-size: 13px;
+    .kpi .label {
+      color: var(--text-muted);
+      font-size: 0.72rem;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      font-weight: 700;
       margin-bottom: 4px;
     }
 
-    .value {
-      font-size: 26px;
+    .kpi .value {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 1.25rem;
       font-weight: 700;
     }
 
-    .sub {
-      font-size: 13px;
-      color: var(--muted);
+    .kpi .sub {
+      font-size: 0.78rem;
+      color: var(--text-muted);
       margin-top: 2px;
+    }
+
+    /* ── Right: chart card ── */
+    .content {
+      display: grid;
+      gap: 16px;
+    }
+
+    .chart-card {
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .chart-card h2 {
+      font-size: 1.05rem;
+      font-weight: 700;
+      margin: 0 0 4px;
+    }
+
+    .chart-card .small {
+      color: var(--text-muted);
+      font-size: 0.85rem;
     }
 
     .chart-wrap {
       flex: 1;
       margin-top: 10px;
-      min-height: 0;
-      display: flex;
+      min-height: 480px;
     }
 
     canvas {
       width: 100%;
       height: 100%;
       border: 1px solid var(--border);
-      border-radius: 14px;
+      border-radius: var(--radius-sm);
       background: #fff;
       display: block;
     }
@@ -232,9 +185,9 @@
       display: flex;
       flex-wrap: wrap;
       gap: 12px;
-      font-size: 14px;
+      font-size: 0.85rem;
       margin-top: 10px;
-      color: var(--muted);
+      color: var(--text-muted);
     }
 
     .dot {
@@ -246,113 +199,106 @@
       vertical-align: middle;
     }
 
-    code.kbd {
-      background: #111827;
-      color: #fff;
-      padding: 2px 7px;
-      border-radius: 6px;
-      font-size: 13px;
-    }
-
     .delta-good { color: var(--good); }
     .delta-bad { color: var(--bad); }
+
+    @media (max-width: 980px) {
+      .page { grid-template-columns: 1fr; }
+      .sidebar { position: static; }
+      .kpi-grid { grid-template-columns: 1fr; }
+    }
   </style>
 </head>
 <body>
-  <div class="wrap">
-    <h1>Expected Return Simulator</h1>
-    <div class="subtitle">
-      This dashboard uses random draws from the economy states below. It shows that <strong>expected return is a long-run average over many repeats</strong>, not the return that must happen on the very next draw.
-    </div>
+  <div class="page">
+    <aside class="sidebar panel">
+      <a class="back-link" href="./index.html">
+        <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M10 3L5 8l5 5"/></svg>
+        Finance Learning Tools
+      </a>
+      <div class="page-header">
+        <h1>Expected Return Simulator</h1>
+      </div>
+      <p class="subtitle">This dashboard uses random draws from the economy states below. It shows that <strong>expected return is a long-run average over many repeats</strong>, not the return that must happen on the very next draw.</p>
 
-    <div class="grid">
-      <div>
-        <div class="card">
-          <h2>State table</h2>
-          <table>
-            <thead>
-              <tr>
-                <th>State</th>
-                <th>Probability</th>
-                <th>Security L</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td>Recession</td>
-                <td>0.50</td>
-                <td>-20%</td>
-              </tr>
-              <tr>
-                <td>Boom</td>
-                <td>0.50</td>
-                <td>70%</td>
-              </tr>
-            </tbody>
-          </table>
+      <h2>State table</h2>
+      <table>
+        <thead>
+          <tr>
+            <th>State</th>
+            <th>Prob</th>
+            <th>Security L</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Recession</td>
+            <td>0.50</td>
+            <td>-20%</td>
+          </tr>
+          <tr>
+            <td>Boom</td>
+            <td>0.50</td>
+            <td>70%</td>
+          </tr>
+        </tbody>
+      </table>
+      <div class="formula">
+        <strong>Expected return of L</strong> = 0.5(-20%) + 0.5(70%) = <strong>25%</strong>
+      </div>
 
-          <div class="formula">
-            <div><strong>Expected return of L</strong> = 0.5(-20%) + 0.5(70%) = <strong>25%</strong></div>
-          </div>
+      <div class="controls">
+        <button class="btn btn-primary" id="draw1">Draw once</button>
+        <button class="btn btn-outline" id="draw10">Draw 10</button>
+        <button class="btn btn-outline" id="draw100">Draw 100</button>
+        <button class="btn btn-secondary" id="autoBtn">Start auto</button>
+        <button class="btn btn-outline" id="resetBtn">Reset</button>
+      </div>
 
-          <h2 style="margin-top:16px;">Controls</h2>
-          <div class="controls">
-            <button class="primary" id="draw1">Draw once</button>
-            <button id="draw10">Draw 10</button>
-            <button id="draw100">Draw 100</button>
-            <button class="secondary" id="autoBtn">Start auto</button>
-            <button id="resetBtn">Reset</button>
-          </div>
-          <div class="small">
-            Keyboard shortcuts: <code class="kbd">Space</code> = 1 draw, <code class="kbd">1</code> = 10 draws, <code class="kbd">2</code> = 100 draws, <code class="kbd">A</code> = start/stop auto, <code class="kbd">R</code> = reset.
-          </div>
-
-          <div class="panel-grid">
-            <div class="mini-card">
-              <div class="label small">Last draw</div>
-              <div id="lastState" style="margin-top:8px; font-size:18px; font-weight:700;">No draws yet</div>
-              <div id="lastReturn" class="small" style="margin-top:8px;">L: -</div>
-            </div>
-            <div class="mini-card">
-              <div class="label small">State counts</div>
-              <div style="margin-top:8px; font-size:17px;">
-                <span class="pill recession">Recession: <span id="recCount">0</span></span>
-                <span class="pill boom">Boom: <span id="boomCount">0</span></span>
-              </div>
-            </div>
-          </div>
-
-          <div class="kpi-grid">
-            <div class="kpi">
-              <div class="label">Trials</div>
-              <div class="value" id="trials">0</div>
-              <div class="sub">Number of random repeats</div>
-            </div>
-            <div class="kpi">
-              <div class="label">Running average, L</div>
-              <div class="value" id="avgL">-</div>
-              <div class="sub">Expected = 25%</div>
-            </div>
-            <div class="kpi">
-              <div class="label">Distance from expected</div>
-              <div class="value" id="distance">-</div>
-              <div class="sub">Absolute gap from 25%</div>
-            </div>
+      <div class="info-grid">
+        <div class="mini-card">
+          <div class="label">Last draw</div>
+          <div id="lastState" style="margin-top:6px; font-size:1rem; font-weight:700;">No draws yet</div>
+          <div id="lastReturn" style="color:var(--text-muted);font-size:0.85rem;margin-top:4px;">L: -</div>
+        </div>
+        <div class="mini-card">
+          <div class="label">State counts</div>
+          <div style="margin-top:6px;">
+            <span class="pill recession">Recession: <span id="recCount">0</span></span>
+            <span class="pill boom">Boom: <span id="boomCount">0</span></span>
           </div>
         </div>
       </div>
 
-      <div>
-        <div class="card chart-card">
-          <h2>Running average over time</h2>
-          <div class="small">The solid line is the running average from the simulation. The dashed line is the expected return.</div>
-          <div class="chart-wrap">
-            <canvas id="chart"></canvas>
-          </div>
-          <div class="legend">
-            <span><span class="dot" style="background:#0f766e"></span>L running average</span>
-            <span><span class="dot" style="background:#99f6e4"></span>L expected = 25%</span>
-          </div>
+      <div class="kpi-grid">
+        <div class="kpi">
+          <div class="label">Trials</div>
+          <div class="value" id="trials">0</div>
+          <div class="sub">Repeats</div>
+        </div>
+        <div class="kpi">
+          <div class="label">Avg L</div>
+          <div class="value" id="avgL">-</div>
+          <div class="sub">Exp = 25%</div>
+        </div>
+        <div class="kpi">
+          <div class="label">Gap</div>
+          <div class="value" id="distance">-</div>
+          <div class="sub">|avg − 25%|</div>
+        </div>
+      </div>
+    </aside>
+
+    <div class="content">
+      <div class="chart-card panel">
+        <h2>Running average over time</h2>
+        <div class="small">The solid line is the running average from the simulation. The dashed line is the expected return.</div>
+        <div class="chart-wrap">
+          <canvas id="chart"></canvas>
+        </div>
+        <div class="legend">
+          <span><span class="dot" style="background:#1e3a5f"></span>L running average</span>
+          <span><span class="dot" style="background:#93c5fd"></span>L expected = 25%</span>
         </div>
       </div>
     </div>
@@ -436,7 +382,7 @@
       const h = canvas.height / ratio;
       ctx.clearRect(0, 0, w, h);
 
-      const m = { top: 24, right: 18, bottom: 44, left: 56 };
+      const m = { top: 24, right: 18, bottom: 44, left: 68 };
       const innerW = w - m.left - m.right;
       const innerH = h - m.top - m.bottom;
 
@@ -451,20 +397,20 @@
         return m.top + (1 - (v - yMin) / (yMax - yMin)) * innerH;
       }
 
-      ctx.strokeStyle = '#e5e7eb';
+      ctx.strokeStyle = '#e2e8f0';
       ctx.lineWidth = 1;
-      ctx.font = '12px Arial';
-      ctx.fillStyle = '#6b7280';
+      ctx.font = '12px DM Sans, sans-serif';
+      ctx.fillStyle = '#64748b';
       for (let val = -0.2; val <= 0.8; val += 0.1) {
         const y = yScale(val);
         ctx.beginPath();
         ctx.moveTo(m.left, y);
         ctx.lineTo(w - m.right, y);
         ctx.stroke();
-        ctx.fillText(`${Math.round(val * 100)}%`, 8, y + 4);
+        ctx.fillText(`${Math.round(val * 100)}%`, 16, y + 4);
       }
 
-      ctx.strokeStyle = '#9ca3af';
+      ctx.strokeStyle = '#94a3b8';
       ctx.lineWidth = 1.5;
       ctx.beginPath();
       ctx.moveTo(m.left, m.top);
@@ -472,17 +418,17 @@
       ctx.lineTo(w - m.right, h - m.bottom);
       ctx.stroke();
 
-      drawDashedLine(ctx, m.left, yScale(expectedL), w - m.right, yScale(expectedL), '#99f6e4');
-      ctx.fillStyle = '#065f46';
+      drawDashedLine(ctx, m.left, yScale(expectedL), w - m.right, yScale(expectedL), '#93c5fd');
+      ctx.fillStyle = '#1e3a5f';
       ctx.fillText('Expected L = 25%', w - 135, yScale(expectedL) - 6);
 
       if (n > 0) {
-        drawSeries(ctx, avgSeriesL, '#0f766e', xScale, yScale);
+        drawSeries(ctx, avgSeriesL, '#1e3a5f', xScale, yScale);
         const xLast = xScale(n - 1);
-        circle(ctx, xLast, yScale(avgSeriesL[n - 1]), 4, '#0f766e');
+        circle(ctx, xLast, yScale(avgSeriesL[n - 1]), 4, '#1e3a5f');
       }
 
-      ctx.fillStyle = '#6b7280';
+      ctx.fillStyle = '#64748b';
       const tickCount = 6;
       for (let t = 0; t <= tickCount; t++) {
         const x = m.left + (t / tickCount) * innerW;
@@ -490,22 +436,23 @@
         ctx.beginPath();
         ctx.moveTo(x, h - m.bottom);
         ctx.lineTo(x, h - m.bottom + 6);
-        ctx.strokeStyle = '#9ca3af';
+        ctx.strokeStyle = '#94a3b8';
         ctx.stroke();
         ctx.fillText(String(trialNum), x - 8, h - 18);
       }
 
-      ctx.fillStyle = '#374151';
-      ctx.fillText('Trial number', w / 2 - 28, h - 6);
+      ctx.fillStyle = '#1e293b';
+      ctx.font = '12px DM Sans, sans-serif';
+      ctx.fillText('Trial number', w / 2 - 30, h - 4);
       ctx.save();
-      ctx.translate(14, h / 2 + 18);
+      ctx.translate(12, h / 2 + 16);
       ctx.rotate(-Math.PI / 2);
       ctx.fillText('Return', 0, 0);
       ctx.restore();
 
       if (n === 0) {
-        ctx.fillStyle = '#6b7280';
-        ctx.font = '16px Arial';
+        ctx.fillStyle = '#64748b';
+        ctx.font = '16px DM Sans, sans-serif';
         ctx.fillText('Press Draw once to start the simulation', w / 2 - 130, h / 2);
       }
     }
@@ -583,22 +530,6 @@
     document.getElementById('draw100').addEventListener('click', () => drawMany(100));
     document.getElementById('resetBtn').addEventListener('click', resetAll);
     els.autoBtn.addEventListener('click', toggleAuto);
-
-    window.addEventListener('keydown', (e) => {
-      if (['INPUT', 'TEXTAREA'].includes(document.activeElement.tagName)) return;
-      if (e.code === 'Space') {
-        e.preventDefault();
-        drawOne();
-      } else if (e.key === '1') {
-        drawMany(10);
-      } else if (e.key === '2') {
-        drawMany(100);
-      } else if (e.key.toLowerCase() === 'a') {
-        toggleAuto();
-      } else if (e.key.toLowerCase() === 'r') {
-        resetAll();
-      }
-    });
 
     window.addEventListener('resize', resizeCanvas);
     resetAll();

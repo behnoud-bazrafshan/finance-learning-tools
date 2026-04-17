@@ -1,45 +1,37 @@
-# finance-learning-tools
+# Finance Learning Tools
 
-A collection of interactive dashboards, simulators, and visual tools for teaching and learning finance concepts.
+A collection of interactive dashboards, simulators, and visual tools for teaching and learning finance concepts. All dashboards share a unified light-theme design system built around DM Sans typography, a navy accent palette, and white card layouts.
 
-Live site:
-
-https://behnoud-bazrafshan.github.io/finance-learning-tools/
+**Live site:** https://behnoud-bazrafshan.github.io/finance-learning-tools/
 
 ## Dashboards
 
-### Efficient Frontier Dashboard
+| Dashboard | Description |
+|-----------|-------------|
+| [Bond Price Simulator](https://behnoud-bazrafshan.github.io/finance-learning-tools/bond_simulator.html) | Visualises the price-yield curve and present-value cash flows for bonds with adjustable coupon, maturity, and yield inputs. |
+| [Efficient Frontier](https://behnoud-bazrafshan.github.io/finance-learning-tools/efficient_frontier_dashboard.html) | Explores how portfolio weights, correlations, and diversification shape the risk-return opportunity set. Supports 2- and 3-asset portfolios. |
+| [Financial Leverage](https://behnoud-bazrafshan.github.io/finance-learning-tools/financial_leverage_simulator.html) | Compares levered vs. unlevered capital structures and shows how debt affects ROE under different market scenarios. |
+| [Expected Return](https://behnoud-bazrafshan.github.io/finance-learning-tools/expected_return_dashboard.html) | Draws random economic states and tracks the running average return, demonstrating that expected return is a long-run average. |
+| [Histogram](https://behnoud-bazrafshan.github.io/finance-learning-tools/histogram_dashboard.html) | Builds a frequency distribution step-by-step from Canadian stock returns (1948–2022). |
 
-An interactive portfolio theory dashboard for exploring the relationship between risk and expected return. It helps students and instructors visualize the efficient frontier, compare portfolio choices, and experiment with allocation ideas in a classroom-friendly format.
+## Design System
 
-Direct link:
+All pages link to a shared `styles.css` that provides:
 
-https://behnoud-bazrafshan.github.io/finance-learning-tools/efficient_frontier_dashboard.html
+- CSS custom properties for colours, spacing, and typography
+- Reusable components: `.back-link`, `.page-header`, `.panel`, `.stat-card`, `.btn` variants, `.toggle-switch`
+- DM Sans + JetBrains Mono from Google Fonts
+- Responsive breakpoints
 
-### Financial Leverage Simulator
+## Tech Stack
 
-An interactive capital structure simulator that shows how leverage affects outcomes under different assumptions. It is designed to help explain financing tradeoffs, scenario comparisons, and the teaching implications of debt on firm performance.
-
-Direct link:
-
-https://behnoud-bazrafshan.github.io/finance-learning-tools/financial_leverage_simulator.html
-
-### Expected Return Simulator
-
-An interactive probability and expected return teaching tool that repeatedly draws economic states and tracks the running average return. It is useful for showing students that expected return is a long-run average across many trials, not the guaranteed outcome of the next observation.
-
-Direct link:
-
-https://behnoud-bazrafshan.github.io/finance-learning-tools/expected_return_dashboard.html
-
-### Histogram Dashboard
-
-An interactive frequency distribution dashboard built from historical Canadian common stock returns. It helps students see how raw annual return observations accumulate into bins and how a histogram is formed from underlying data points.
-
-Direct link:
-
-https://behnoud-bazrafshan.github.io/finance-learning-tools/histogram_dashboard.html
+- Vanilla HTML / CSS / JavaScript — zero-build, no frameworks
+- Chart.js (Efficient Frontier, Financial Leverage)
+- Canvas 2D API (Expected Return)
+- SVG (Bond Simulator)
+- DOM-based bars (Histogram)
+- Hosted on GitHub Pages
 
 ## Purpose
 
-These dashboards are intended for teaching, classroom exploration, and self-guided learning in finance. The collection now covers portfolio choice, leverage, expected return, and return distributions. Each tool is published as a static page through GitHub Pages, so it can be opened directly in a browser without a separate build or backend service.
+These dashboards are intended for teaching, classroom exploration, and self-guided learning in finance. Each tool is published as a static page through GitHub Pages and can be opened directly in a browser without a build step or backend.
