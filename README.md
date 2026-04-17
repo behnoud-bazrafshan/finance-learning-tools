@@ -14,24 +14,6 @@ A collection of interactive dashboards, simulators, and visual tools for teachin
 | [Expected Return](https://behnoud-bazrafshan.github.io/finance-learning-tools/expected_return_dashboard.html) | Draws random economic states and tracks the running average return, demonstrating that expected return is a long-run average. |
 | [Histogram](https://behnoud-bazrafshan.github.io/finance-learning-tools/histogram_dashboard.html) | Builds a frequency distribution step-by-step from Canadian stock returns (1948–2022). |
 
-## Design System
-
-All pages link to a shared `styles.css` that provides:
-
-- CSS custom properties for colours, spacing, and typography
-- Reusable components: `.back-link`, `.page-header`, `.panel`, `.stat-card`, `.btn` variants, `.toggle-switch`
-- DM Sans + JetBrains Mono from Google Fonts
-- Responsive breakpoints
-
-## Tech Stack
-
-- Vanilla HTML / CSS / JavaScript — zero-build, no frameworks
-- Chart.js (Efficient Frontier, Financial Leverage)
-- Canvas 2D API (Expected Return)
-- SVG (Bond Simulator)
-- DOM-based bars (Histogram)
-- Hosted on GitHub Pages
-
 ## Purpose
 
 These dashboards are intended for teaching, classroom exploration, and self-guided learning in finance. Each tool is published as a static page through GitHub Pages and can be opened directly in a browser without a build step or backend.
