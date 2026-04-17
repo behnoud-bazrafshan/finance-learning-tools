@@ -9,44 +9,90 @@
   <title>Expected Return Simulator</title>
   <style>
     :root {
-      --bg: #f6f8fb;
-      --card: #ffffff;
-      --ink: #1f2937;
-      --muted: #6b7280;
-      --border: #d1d5db;
+      --bg-start: #f4efe6;
+      --bg-end: #d9e8f5;
+      --card: rgba(255, 255, 255, 0.88);
+      --ink: #17324d;
+      --muted: #4f657a;
+      --border: rgba(50, 76, 101, 0.14);
       --accent: #0f766e;
-      --accent-soft: #99f6e4;
+      --accent-soft: rgba(15, 118, 110, 0.14);
+      --accent-strong: #0b5e59;
       --good: #15803d;
       --bad: #b91c1c;
-      --soft: #ecfeff;
+      --soft: rgba(12, 110, 79, 0.08);
+      --shadow: 0 24px 70px rgba(23, 50, 77, 0.14);
     }
 
     * { box-sizing: border-box; }
 
     body {
       margin: 0;
-      font-family: Arial, Helvetica, sans-serif;
-      background: var(--bg);
+      font-family: Georgia, "Times New Roman", serif;
+      background:
+        radial-gradient(circle at top, rgba(255, 255, 255, 0.75), transparent 34%),
+        linear-gradient(135deg, var(--bg-start), var(--bg-end));
       color: var(--ink);
       line-height: 1.4;
     }
 
     .wrap {
       max-width: 1220px;
-      margin: 24px auto;
-      padding: 0 16px 32px;
+      margin: 0 auto;
+      padding: 28px 16px 40px;
+    }
+
+    .back-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 18px;
+      color: var(--accent-strong);
+      text-decoration: none;
+      font-family: "Trebuchet MS", "Segoe UI", sans-serif;
+      font-size: 0.92rem;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+    }
+
+    .back-link:hover,
+    .back-link:focus-visible {
+      text-decoration: underline;
+    }
+
+    .hero {
+      margin-bottom: 20px;
+      padding: 32px;
+      border: 1px solid var(--border);
+      border-radius: 28px;
+      background: var(--card);
+      backdrop-filter: blur(12px);
+      box-shadow: var(--shadow);
+    }
+
+    .eyebrow {
+      margin: 0 0 12px;
+      font-family: "Trebuchet MS", "Segoe UI", sans-serif;
+      font-size: 0.82rem;
+      font-weight: 700;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: var(--accent);
     }
 
     h1 {
-      margin: 0 0 10px;
-      font-size: 32px;
+      margin: 0;
+      font-size: clamp(2.3rem, 5vw, 3.7rem);
+      line-height: 0.98;
     }
 
     .subtitle {
       color: var(--muted);
-      margin-bottom: 18px;
+      margin: 16px 0 0;
       max-width: 920px;
       font-size: 17px;
+      line-height: 1.7;
     }
 
     .grid {
@@ -63,10 +109,11 @@
     .card {
       background: var(--card);
       border: 1px solid var(--border);
-      border-radius: 16px;
-      padding: 16px;
-      box-shadow: 0 6px 18px rgba(0,0,0,0.05);
+      border-radius: 24px;
+      padding: 22px;
+      box-shadow: var(--shadow);
       height: 100%;
+      backdrop-filter: blur(12px);
     }
 
     .chart-card {
@@ -80,13 +127,20 @@
     }
 
     .card h2 {
-      font-size: 20px;
+      font-size: 1.45rem;
       margin: 0 0 12px;
     }
 
     .small {
       color: var(--muted);
       font-size: 14px;
+    }
+
+    .label,
+    .small,
+    button,
+    code.kbd {
+      font-family: "Trebuchet MS", "Segoe UI", sans-serif;
     }
 
     table {
@@ -105,13 +159,13 @@
     th:first-child, td:first-child { text-align: left; }
 
     thead th {
-      background: #f8fafc;
+      background: rgba(11, 110, 79, 0.06);
       font-weight: 700;
     }
 
     .formula {
       background: var(--soft);
-      border: 1px solid #a5f3fc;
+      border: 1px solid rgba(15, 118, 110, 0.2);
       border-radius: 12px;
       padding: 12px;
       margin-top: 10px;
@@ -145,9 +199,9 @@
     }
 
     button.secondary {
-      background: #1d4ed8;
+      background: #1f4a7c;
       color: white;
-      border-color: #1d4ed8;
+      border-color: #1f4a7c;
     }
 
     .panel-grid {
@@ -165,7 +219,7 @@
       border: 1px solid var(--border);
       border-radius: 14px;
       padding: 12px;
-      background: #fcfdff;
+      background: rgba(252, 253, 255, 0.8);
     }
 
     .pill {
@@ -195,7 +249,7 @@
       border: 1px solid var(--border);
       border-radius: 14px;
       padding: 12px;
-      background: #fcfdff;
+      background: rgba(252, 253, 255, 0.8);
     }
 
     .label {
@@ -259,14 +313,33 @@
 
     .delta-good { color: var(--good); }
     .delta-bad { color: var(--bad); }
+
+    @media (max-width: 760px) {
+      .wrap {
+        padding-top: 18px;
+      }
+
+      .hero {
+        padding: 24px;
+      }
+
+      .card {
+        padding: 18px;
+      }
+    }
   </style>
 </head>
 <body>
   <div class="wrap">
+    <a class="back-link" href="./index.html">&larr; Back to dashboard list</a>
+
+    <section class="hero">
+      <p class="eyebrow">Expected Return</p>
     <h1>Expected Return Simulator</h1>
     <div class="subtitle">
       This dashboard uses random draws from the economy states below. It shows that <strong>expected return is a long-run average over many repeats</strong>, not the return that must happen on the very next draw.
     </div>
+    </section>
 
     <div class="grid">
       <div>
