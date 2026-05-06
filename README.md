@@ -2,17 +2,17 @@
 
 A collection of interactive dashboards, simulators, and visual tools for teaching and learning finance concepts.
 
-**Live site:** https://behnoud-bazrafshan.github.io/finance-learning-tools/
+**Live site:** https://behnoud-alizadeh.github.io/finance-learning-tools/
 
 ## Dashboards
 
 | Dashboard | Description |
 |-----------|-------------|
-| [Bond Price Simulator](https://behnoud-bazrafshan.github.io/finance-learning-tools/bond_simulator.html) | Visualises the price-yield curve and present-value cash flows for bonds with adjustable coupon, maturity, and yield inputs. |
-| [Efficient Frontier](https://behnoud-bazrafshan.github.io/finance-learning-tools/efficient_frontier_dashboard.html) | Explores how portfolio weights, correlations, and diversification shape the risk-return opportunity set. Supports 2- and 3-asset portfolios. |
-| [Financial Leverage](https://behnoud-bazrafshan.github.io/finance-learning-tools/financial_leverage_simulator.html) | Compares levered vs. unlevered capital structures and shows how debt affects ROE under different market scenarios. |
-| [Expected Return](https://behnoud-bazrafshan.github.io/finance-learning-tools/expected_return_dashboard.html) | Draws random economic states and tracks the running average return, demonstrating that expected return is a long-run average. |
-| [Histogram](https://behnoud-bazrafshan.github.io/finance-learning-tools/histogram_dashboard.html) | Builds a frequency distribution step-by-step from Canadian stock returns (1948–2022). |
+| [Bond Price Simulator](https://behnoud-alizadeh.github.io/finance-learning-tools/bond_simulator.html) | Visualises the price-yield curve and present-value cash flows for bonds with adjustable coupon, maturity, and yield inputs. |
+| [Efficient Frontier](https://behnoud-alizadeh.github.io/finance-learning-tools/efficient_frontier_dashboard.html) | Explores how portfolio weights, correlations, and diversification shape the risk-return opportunity set. Supports 2- and 3-asset portfolios. |
+| [Financial Leverage](https://behnoud-alizadeh.github.io/finance-learning-tools/financial_leverage_simulator.html) | Compares levered vs. unlevered capital structures and shows how debt affects ROE under different market scenarios. |
+| [Expected Return](https://behnoud-alizadeh.github.io/finance-learning-tools/expected_return_dashboard.html) | Draws random economic states and tracks the running average return, demonstrating that expected return is a long-run average. |
+| [Histogram](https://behnoud-alizadeh.github.io/finance-learning-tools/histogram_dashboard.html) | Builds a frequency distribution step-by-step from Canadian stock returns (1948–2022). |
 
 ## Purpose
 
